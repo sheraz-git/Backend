@@ -10,7 +10,7 @@ cloudinary.config({
   api_secret: "6jMBqRlVALHfbR8udrS3fUf4m1A",
 });
 
-// Upload image controller
+// Upload image controllers
 exports.uploadImage = async (req, res) => {
   try {
     const file1 = req.files.file;
