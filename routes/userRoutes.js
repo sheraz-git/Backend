@@ -8,6 +8,7 @@ const seeder=require("../controllers/Seeder/countryseeder")
 const router = express.Router();
 
 /// Seller///
+router.post("/uploadImage",userRoutes.uploadImage);
 router.post("/UserRegister",role.Middleware,userRoutes.UserRegister);
 router.post("/UserLogin",userRoutes.UserLogin);
 router.get("/getUser/:id",protect.verifyToken,userRoutes.getUser);

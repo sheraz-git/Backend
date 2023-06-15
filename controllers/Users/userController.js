@@ -1,51 +1,80 @@
 const User = require("../../models/userModel");
 const Country = require("../../models/country");
 const cloudinary = require("cloudinary").v2;
-const jwt=require("jsonwebtoken")
-const bcrypt=require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const { forSeller } = require("../email");
-
 cloudinary.config({
   cloud_name: "dsv28ungz",
   api_key: "775634257667667",
   api_secret: "6jMBqRlVALHfbR8udrS3fUf4m1A",
 });
-exports.UserRegister = async (req, res) => {
+
+// Upload image controller
+exports.uploadImage = async (req, res) => {
   try {
     const file1 = req.files.file;
-    let result1 = await cloudinary.uploader.upload(file1.tempFilePath);
-    const {first_name,last_name,email,password ,service_Title ,hourly_rate ,phone_no,service_Description} = req.body;
-    // Check if the seller already exists
-    let count = await Country.findOne({ country: req.body.country });
-    console.log("sds",count);     
+    const result1 = await cloudinary.uploader.upload(file1.tempFilePath);
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({
-        message: "email already exists",
-      });
-    }
-    
-    // Access the role value from the request object
-    const selectedRole = req.role;
-
-    // Create a new seller
-    const newUser = new User({
-      image:result1.url,
+    return res.status(200).json({
+      message: "Image uploaded successfully",
+      url: result1.url,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+// User signup controller
+exports.UserRegister = async (req, res) => {
+  try {
+    const {
       first_name,
       last_name,
       email,
       password,
       service_Title,
       hourly_rate,
-      role:selectedRole._id,
-      country:count._id,
       phone_no,
-      service_Description
+      service_Description,
+    } = req.body;
+
+    // Check if the country exists
+    const count = await Country.findOne({ country: req.body.country });
+  //  console.log("count", count);
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Email already exists",
+      });
+    }
+
+    // Access the role value from the request object
+    const selectedRole = req.role;
+
+    // Create a new user
+    const newUser = new User({
+      image: req.body.image, // Image URL from the request body
+      first_name,
+      last_name,
+      email,
+      password,
+      service_Title,
+      hourly_rate,
+      role: selectedRole._id,
+      country: count ? count._id : null, // Set country ID if it exists, otherwise set it to null
+      phone_no,
+      service_Description,
     });
-    // Save the seller to the database
+
+    // Save the user to the database
     await newUser.save();
     await forSeller(first_name, last_name, email, password);
+
     return res.status(201).json({
       message: "User created and email sent successfully",
       data: newUser,
@@ -57,28 +86,28 @@ exports.UserRegister = async (req, res) => {
     });
   }
 };
-
+// User login controller
 exports.UserLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    
+
     if (!user) {
       return res.status(404).json({
         message: "User doesn't exist",
       });
     }
-    
+
     const isMatch = await user.matchPassword(password);
-    
+
     if (!isMatch) {
       return res.status(401).json({
-        message: "Incorrect Email and password",
+        message: "Incorrect email or password",
       });
     }
-    
-    const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: '1h' });
-    
+
+    const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: "1h" });
+
     return res.status(200).json({
       message: "Login successful",
       data: {
@@ -87,97 +116,131 @@ exports.UserLogin = async (req, res) => {
           email: user.email,
           // Include any other relevant user data you want to return
         },
-        token
-      }
+        token,
+      },
     });
   } catch (error) {
-    console.log("Error:", error);
+    console.error("Error:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// Get all users controller
 exports.getAllUser = async (req, res) => {
   try {
+    const users = await User.find().populate("country");
 
-    const user = await User.find().populate("country");    
-    if (!user) {
+    if (users.length === 0) {
       return res.status(200).json({
-        message: "user doesn't exist",
+        message: "No users found",
       });
     } else {
       return res.status(200).json({
         message: "All user data",
-        count:user.length,
-        user,
+        count: users.length,
+        users,
       });
     }
   } catch (error) {
+    console.error(error); // Log the error message for debugging
     return res.status(500).json({
       message: "Server error",
     });
   }
 };
+// Get single user controller
 exports.getUser = async (req, res) => {
   try {
-    const userid = req.params.id;
-    const user = await User.findOne({ _id: userid }).populate("country");    
+    const userId = req.params.id;
+    const user = await User.findById(userId).populate("country");
+
     if (!user) {
-      return res.status(200).json({
-        message: "user doesn't exist",
+      return res.status(404).json({
+        message: "User not found",
       });
     } else {
       return res.status(200).json({
-        message: "user data",
+        message: "User data",
         user,
       });
     }
   } catch (error) {
+    console.error(error); // Log the error message for debugging
     return res.status(500).json({
       message: "Server error",
     });
   }
 };
-
-//delete Seller///
+// Delete user controller
 exports.deleteUser = async (req, res) => {
   try {
-    const userid = req.params.id;
-    const user = await User.findOneAndDelete({ _id: userid });
-   if (!user) {
-      return res.status(200).json({
-        message: "user doesn't exist",
+    const userId = req.params.id;
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
       });
     } else {
       return res.status(200).json({
-        message: "Deleted Succefully",
-        
+        message: "User deleted successfully",
       });
     }
   } catch (error) {
+    console.error(error); // Log the error message for debugging
     return res.status(500).json({
       message: "Server error",
     });
   }
 };
-
-
-// Update seller
+// Update user controller
 exports.UserUpdate = async (req, res) => {
   try {
     const { id } = req.params;
-    const update = req.body;
+    let {
+      first_name,
+      last_name,
+      email,
+      password,
+      service_Title,
+      hourly_rate,
+      phone_no,
+      service_Description,
+      country,
+    } = req.body;
     const options = { new: true }; // Return the updated record
-  if (update.password) {
-      update.password = await bcrypt.hash(update.password, 10);
+
+    if (password) {
+      password = await bcrypt.hash(password, 10);
     }
-    const userupdate = await User.findByIdAndUpdate(id, update, options);
-    if (!userupdate) {
+
+    // Check if the country exists
+    const count = await Country.findOne({ country });
+    //console.log("count", count);
+
+    const update = {
+      first_name,
+      last_name,
+      email,
+      password,
+      service_Title,
+      hourly_rate,
+      phone_no,
+      service_Description,
+      country: count._id,
+    };
+
+    const userUpdate = await User.findByIdAndUpdate(id, update, options);
+
+    if (!userUpdate) {
       return res.status(404).json({
-        message: "user not found",
+        message: "User not found",
       });
     }
+
     return res.status(200).json({
-      message: "user updated",
-      userupdate,
+      message: "User updated",
+      user: userUpdate,
     });
   } catch (error) {
     console.error(error); // Log the error message for debugging
