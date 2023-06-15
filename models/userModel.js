@@ -50,6 +50,28 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    date_of_birth:{
+      type: Date,
+      required: true,   
+    },
+    address:{
+      type: String,
+      required: true,   
+    },
+    account_status: {
+      type: String, 
+      required: true,
+      default:"active"
+    },
+    email_verification: {
+      type: Boolean, 
+      required: true,
+      default:false
+    },
+    language: {
+      type: String, 
+      required: true,
+    },
   },
   {
     timestamps: true,

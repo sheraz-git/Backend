@@ -39,6 +39,11 @@ exports.UserRegister = async (req, res) => {
       hourly_rate,
       phone_no,
       service_Description,
+      date_of_birth,
+      address,
+      account_status,
+      email_verification,
+      language
     } = req.body;
 
     // Check if the country exists
@@ -69,12 +74,23 @@ exports.UserRegister = async (req, res) => {
       country: count ? count._id : null, // Set country ID if it exists, otherwise set it to null
       phone_no,
       service_Description,
+      date_of_birth,
+      address,
+      account_status,
+      email_verification,
+      language
     });
 
     // Save the user to the database
-    await newUser.save();
-    await forSeller(first_name, last_name, email, password);
-
+    const usersave=await newUser.save();
+    if (!usersave) {
+      return res.status(500).json({
+        message: "User registration failed",
+      });
+    }
+    else{
+    await forSeller(first_name, last_name,email);
+    }
     return res.status(201).json({
       message: "User created and email sent successfully",
       data: newUser,
@@ -94,7 +110,7 @@ exports.UserLogin = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "User doesn't exist",
+        message: "User(Email and Password) doesn't exist",
       });
     }
 
@@ -207,6 +223,11 @@ exports.UserUpdate = async (req, res) => {
       phone_no,
       service_Description,
       country,
+      date_of_birth,
+      address,
+      account_status,
+      email_verification,
+       language
     } = req.body;
     const options = { new: true }; // Return the updated record
 
@@ -228,6 +249,11 @@ exports.UserUpdate = async (req, res) => {
       phone_no,
       service_Description,
       country: count._id,
+      date_of_birth,
+      address,
+      account_status,
+      email_verification,
+       language
     };
 
     const userUpdate = await User.findByIdAndUpdate(id, update, options);
