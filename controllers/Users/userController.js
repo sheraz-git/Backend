@@ -237,7 +237,7 @@ exports.UserUpdate = async (req, res) => {
     }
 
     // Check if the country exists
-    const count = await Country.findOne({ country });
+    // const count = await Country.findOne({ country });
     //console.log("count", count);
 
     const update = {
@@ -249,7 +249,7 @@ exports.UserUpdate = async (req, res) => {
       hourly_rate,
       phone_no,
       service_Description,
-      country: count._id,
+      country,
       date_of_birth,
       address,
       account_status,
