@@ -43,11 +43,12 @@ exports.UserRegister = async (req, res) => {
       address,
       account_status,
       email_verification,
-      language
+      language,
+      country
     } = req.body;
 
     // Check if the country exists
-    const count = await Country.findOne({ country: req.body.country });
+    // const count = await Country.findOne({ country: req.body.country });
   //  console.log("count", count);
 
     // Check if the user already exists
@@ -71,7 +72,7 @@ exports.UserRegister = async (req, res) => {
       service_Title,
       hourly_rate,
       role: selectedRole._id,
-      country: count ? count._id : null, // Set country ID if it exists, otherwise set it to null
+      country, // Set country ID if it exists, otherwise set it to null
       phone_no,
       service_Description,
       date_of_birth,
