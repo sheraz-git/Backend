@@ -10,7 +10,7 @@ cloudinary.config({
   api_secret: "6jMBqRlVALHfbR8udrS3fUf4m1A",
 });
 
-// Upload image controllers
+//Upload image controllers
 exports.uploadImage = async (req, res) => {
   try {
     const file1 = req.files.file;
@@ -45,6 +45,7 @@ exports.UserRegister = async (req, res) => {
       email_verification,
       language
     } = req.body;
+
 
     // Check if the country exists
     const count = await Country.findOne({ country: req.body.country });
@@ -140,11 +141,10 @@ exports.UserLogin = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 // Get all users controller
 exports.getAllUser = async (req, res) => {
   try {
-    const users = await User.find().populate("country");
+    const users = await User.find({}, "-password").populate("country");
 
     if (users.length === 0) {
       return res.status(200).json({

@@ -28,8 +28,32 @@ const jobSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    }  
-
+    },
+    joblevel:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "jobLevel",
+      required: true,
+    },
+    min_experience:{
+         type:Number,
+         require:true
+    },
+    max_experience:{
+      type:Number,
+      require:true
+    },
+    min_projectLength:{
+      type:Number,
+      require:true
+ },
+ max_projectLength:{
+   type:Number,
+   require:true
+ },
+  Propsoal:{
+    type:Number,
+    require:true
+  }
   },
   {
     timestamps: true,
