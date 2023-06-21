@@ -1,5 +1,4 @@
 const User = require("../../models/userModel");
-const Country = require("../../models/country");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
