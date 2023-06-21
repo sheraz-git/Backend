@@ -83,7 +83,9 @@ exports.userRegister = async (req, res) => {
       });
     }
     else{
-    await forUserEmail(first_name, last_name,email);
+      console.log(usersave._id);
+     const userId= usersave._id; 
+      await forUserEmail(first_name, last_name,email,userId);
     }
     return res.status(201).json({
       message: "User created and email sent successfully",

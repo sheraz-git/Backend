@@ -17,8 +17,7 @@ router.post("/UserLogin",userRoutes.userLogin);
 
 // mail
 
-router.get("/forSeller",protect.verifyToken,mailConfirmation.forUserEmail);
-
-
+router.get("/forUserEmail",mailConfirmation.forUserEmail);
+router.get("/userEmailVerification/:id",mailConfirmation.userEmailVerification);
 
 module.exports = router;
