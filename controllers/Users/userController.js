@@ -23,7 +23,7 @@ exports.uploadImage = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "Server error",
+       message: "Server error",
     });
   }
 };
@@ -43,13 +43,10 @@ exports.UserRegister = async (req, res) => {
       address,
       account_status,
       email_verification,
-      language
+      language,
+      role,
+      country
     } = req.body;
-
-
-    // Check if the country exists
-    const count = await Country.findOne({ country: req.body.country });
-  //  console.log("count", count);
 
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
@@ -58,9 +55,6 @@ exports.UserRegister = async (req, res) => {
         message: "Email already exists",
       });
     }
-
-    // Access the role value from the request object
-    const selectedRole = req.role;
 
     // Create a new user
     const newUser = new User({
@@ -71,8 +65,8 @@ exports.UserRegister = async (req, res) => {
       password,
       service_Title,
       hourly_rate,
-      role: selectedRole._id,
-      country: count ? count._id : null, // Set country ID if it exists, otherwise set it to null
+      role,
+      country,
       phone_no,
       service_Description,
       date_of_birth,
@@ -235,10 +229,6 @@ exports.UserUpdate = async (req, res) => {
       password = await bcrypt.hash(password, 10);
     }
 
-    // Check if the country exists
-    const count = await Country.findOne({ country });
-    //console.log("count", count);
-
     const update = {
       first_name,
       last_name,
@@ -248,7 +238,7 @@ exports.UserUpdate = async (req, res) => {
       hourly_rate,
       phone_no,
       service_Description,
-      country: count._id,
+      country,
       date_of_birth,
       address,
       account_status,

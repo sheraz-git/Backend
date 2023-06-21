@@ -9,19 +9,19 @@ const router = express.Router();
 
 /// Seller///
 router.post("/uploadImage",userRoutes.uploadImage);
-router.post("/UserRegister",role.Middleware,userRoutes.UserRegister);
+router.post("/UserRegister",userRoutes.UserRegister);
 router.post("/UserLogin",userRoutes.UserLogin);
 router.get("/getUser/:id",protect.verifyToken,userRoutes.getUser);
 router.get("/getAllUser",userRoutes.getAllUser);
 router.delete("/deleteUser/:id",protect.verifyToken,userRoutes.deleteUser);
 router.put("/UserUpdate/:id",protect.verifyToken,userRoutes.UserUpdate);
 
-//// mail///
+// mail
 
 router.get("/forSeller",protect.verifyToken,mailConfirmation.forSeller);
 
-////role ///
-
+//role
+ 
 router.get("/roleSeeder",roleroutes.roleSeeder);
 
 
