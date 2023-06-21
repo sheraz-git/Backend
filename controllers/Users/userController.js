@@ -2,7 +2,7 @@ const User = require("../../models/userModel");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { forSeller } = require("../email");
+const { forUserEmail } = require("../email");
 cloudinary.config({
   cloud_name: "dsv28ungz",
   api_key: "775634257667667",
@@ -27,7 +27,7 @@ exports.uploadImage = async (req, res) => {
   }
 };
 // User signup controller
-exports.UserRegister = async (req, res) => {
+exports.userRegister = async (req, res) => {
   try {
     const {
       first_name,
@@ -83,7 +83,7 @@ exports.UserRegister = async (req, res) => {
       });
     }
     else{
-    await forSeller(first_name, last_name,email);
+    await forUserEmail(first_name, last_name,email);
     }
     return res.status(201).json({
       message: "User created and email sent successfully",
@@ -97,10 +97,10 @@ exports.UserRegister = async (req, res) => {
   }
 };
 // User login controller
-exports.UserLogin = async (req, res) => {
+exports.userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("role","-_id");
 
     if (!user) {
       return res.status(404).json({
@@ -124,6 +124,8 @@ exports.UserLogin = async (req, res) => {
         user: {
           id: user._id,
           email: user.email,
+          role: user.role,
+          
           // Include any other relevant user data you want to return
         },
         token,
@@ -203,7 +205,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 // Update user controller
-exports.UserUpdate = async (req, res) => {
+exports.userUpdate = async (req, res) => {
   try {
     const { id } = req.params;
     let {

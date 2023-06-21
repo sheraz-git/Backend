@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
     },
     country: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "countrie", // Corrected the reference model name to "Country"
+      ref: "countries", // Corrected the reference model name to "Country"
       required: true,
     },
     role: {

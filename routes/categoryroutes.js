@@ -1,24 +1,12 @@
 const express=require("express");
-const seeder=require("../controllers/Seeder/categoryseeder");
-const job=require("../controllers/Users/Job");
+const seeder=require("../controllers/Seeder/categorySeeder");
 const portfolio=require("../controllers/Users/addPortfolio");
 const protect=require("../middleware/authMiddleware");
-const joblevels=require("../controllers/Seeder/joblevelseeder");
 
 const router = express.Router();
 
 
 router.get("/categorySeeder",seeder.categorySeeder);
-
-// Job routes
-router.post("/PostAJob",protect.verifyToken,job.PostAJob);
-router.get("/getAJob/:id",job.getAJob);
-router.get("/getAJobByID/:id",job.getAJobByID);
-router.delete("/deleteAJob/:id",protect.verifyToken,job.deleteAJob);
-router.put("/updateAJob/:id",protect.verifyToken,job.updateAJob);
-
-// /levels
-router.get("/jobLevelSeeder",joblevels.jobLevelSeeder);
 
 // Portfolio Routes
 router.post("/AddPortfolio",protect.verifyToken,portfolio.AddPortfolio);

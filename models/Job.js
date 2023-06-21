@@ -16,12 +16,12 @@ const jobSchema = new mongoose.Schema(
     },
     category: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "categorie",
+      ref: "categories",
       required: true,
     }],
     country: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "countrie",
+      ref: "countries",
       required: true,
     },  
     User: {
@@ -29,7 +29,7 @@ const jobSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    joblevel:{
+    job_level:{
       type: mongoose.Schema.Types.ObjectId,
       ref: "jobLevel",
       required: true,
@@ -50,7 +50,7 @@ const jobSchema = new mongoose.Schema(
    type:Number,
    require:true
  },
-  Propsoal:{
+  proposal:{
     type:Number,
     require:true
   }

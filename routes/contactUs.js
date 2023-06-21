@@ -3,7 +3,7 @@ const contact=require("../controllers/contactUs");
 const router = express.Router();
 
 /// contact us ///
-router.post("/contactUserInfo",contact.contactUserInfo);
+router.post("/contactUserInfo",contact.contactUs);
 
 
 

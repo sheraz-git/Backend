@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-exports.forSeller = async function (first_name, last_name,email) {
+exports.forUserEmail = async function (first_name, last_name,email) {
   try {
     // create reusable transporter object using the default SMTP transport
     let transport = nodemailer.createTransport({
@@ -34,7 +34,7 @@ exports.forSeller = async function (first_name, last_name,email) {
 };
 
 
-exports.forContactus = async function ( name, email, subject, phone_no,description) {
+exports.forContactUs = async function ( name, email, subject, phone_no,description) {
   try {
     // create reusable transporter object using the default SMTP transport
     let transport = nodemailer.createTransport({
