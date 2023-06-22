@@ -33,7 +33,7 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
     // send email with defined transport object
     let info = await transport.sendMail(mailOptions);
 
-    console.log("Email sent successfully", info);
+    console.log("Email sent successfully");
   } catch (error) {
     console.error(error);
     throw new Error("Failed to send email");
@@ -41,8 +41,11 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
 };
 exports.userEmailVerification = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.params.id;
+    // console.log("🚀 ~ file: email.js:45 ~ exports.userEmailVerification= ~ userId:", userId)
+ 
     const user = await User.findById(userId);
+    // console.log("🚀 ~ file: email.js:48 ~ exports.userEmailVerification= ~ user:", user)
 
     if (!user) {
       return res.status(404).json({

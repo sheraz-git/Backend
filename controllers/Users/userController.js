@@ -83,7 +83,6 @@ exports.userRegister = async (req, res) => {
       });
     }
     else{
-      console.log(usersave._id);
      const userId= usersave._id; 
       await forUserEmail(first_name, last_name,email,userId);
     }
