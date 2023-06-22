@@ -1,4 +1,5 @@
 const User = require("../../models/userModel");
+const ErrorHandler = require("../../utils/errorHandler.js")
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -27,7 +28,7 @@ exports.uploadImage = async (req, res) => {
   }
 };
 // User signup controller
-exports.userRegister = async (req, res) => {
+exports.userRegister = async (req, res , next) => {
   try {
     const {
       first_name,
@@ -46,13 +47,11 @@ exports.userRegister = async (req, res) => {
       role,
       country
     } = req.body;
-
+    
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({
-        message: "Email already exists",
-      });
+      return next(new ErrorHandler("Email is already Exist" , 400))
     }
 
     // Create a new user
@@ -78,24 +77,22 @@ exports.userRegister = async (req, res) => {
     // Save the user to the database
     const usersave=await newUser.save();
     if (!usersave) {
-      return res.status(500).json({
-        message: "User registration failed",
-      });
+  
+      return next(new ErrorHandler( "User registration failed" , 404))
     }
-    else{
-      console.log(usersave._id);
-     const userId= usersave._id; 
-      await forUserEmail(first_name, last_name,email,userId);
-    }
+    
+      
+    //  const userId= usersave._id; 
+     await forUserEmail(first_name, last_name,email,usersave._id);
+    
     return res.status(201).json({
       message: "User created and email sent successfully",
       data: newUser,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "Server error",
-    });
+   
+    return next(new ErrorHandler(error))
+   
   }
 };
 // User login controller
@@ -105,17 +102,14 @@ exports.userLogin = async (req, res) => {
     const user = await User.findOne({ email }).populate("role","-_id");
 
     if (!user) {
-      return res.status(404).json({
-        message: "User(Email and Password) doesn't exist",
-      });
+      return next(new ErrorHandler("User Email and Password doesn't exist" , 401))
     }
 
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return res.status(401).json({
-        message: "Incorrect email or password",
-      });
+   
+      return next(new ErrorHandler("Incorrect email and Password" , 404))
     }
 
     const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: "1h" });
@@ -134,8 +128,8 @@ exports.userLogin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).json({ message: "Server error" });
+   
+    return next(new ErrorHandler())
   }
 };
 // Get all users controller
@@ -144,9 +138,8 @@ exports.getAllUser = async (req, res) => {
     const users = await User.find({}, "-password").populate("country");
 
     if (users.length === 0) {
-      return res.status(200).json({
-        message: "No users found",
-      });
+     
+      return next(new ErrorHandler("No User Found" , 404))
     } else {
       return res.status(200).json({
         message: "All user data",
@@ -155,10 +148,8 @@ exports.getAllUser = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error); // Log the error message for debugging
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return next(new ErrorHandler())
+    
   }
 };
 // Get single user controller
@@ -168,9 +159,9 @@ exports.getUser = async (req, res) => {
     const user = await User.findById(userId).populate("country");
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+     
+      return next(new ErrorHandler("User not Found" , 404))
+
     } else {
       return res.status(200).json({
         message: "User data",
@@ -178,10 +169,8 @@ exports.getUser = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error); // Log the error message for debugging
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return next(new ErrorHandler())
+   
   }
 };
 // Delete user controller
@@ -191,19 +180,14 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findByIdAndDelete(userId);
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+      return next(new ErrorHandler("User not Found" , 404))
     } else {
       return res.status(200).json({
         message: "User deleted successfully",
       });
     }
   } catch (error) {
-    console.error(error); // Log the error message for debugging
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return next(new ErrorHandler())
   }
 };
 // Update user controller
@@ -252,9 +236,7 @@ exports.userUpdate = async (req, res) => {
     const userUpdate = await User.findByIdAndUpdate(id, update, options);
 
     if (!userUpdate) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+      return next(new ErrorHandler("User not Found" , 404))
     }
 
     return res.status(200).json({
@@ -262,9 +244,6 @@ exports.userUpdate = async (req, res) => {
       user: userUpdate,
     });
   } catch (error) {
-    console.error(error); // Log the error message for debugging
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return next(new ErrorHandler())
   }
 };
