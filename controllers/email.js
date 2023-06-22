@@ -18,13 +18,13 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
     let mailOptions = {
       to: email,
       subject: "New User Registration",
-      html: `<h1>Hello Sheraz,</h1>
+      html: `<h1>Hello</h1>
             <p>A new user has registered on the freelancing site.</p>
             <p>Name: ${first_name} ${last_name}</p>
             <p>Email: ${email}</p>
             <p>Please take necessary actions.</p>
             <p>Click the following link to see the user details:</p>
-            <p><a href="http://localhost:3001/#/loading/${userId}">User Details</a></p>
+            <p><a href="http://localhost:3001/#/loading/${userId}">Move to Website</a></p>
             <h2>Thank and Regards</h2>
             <h2>ZNZ Communication</h2>
             `

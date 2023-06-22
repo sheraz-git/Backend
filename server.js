@@ -5,14 +5,14 @@ const adminRoutes = require("./routes/adminRoutes.js");
 const contactUs = require("./routes/contactUs.js");
 const seederRoutes = require("./routes/seederRoutes.js");
 const jobRoutes = require("./routes/jobRoutes.js");
-const category = require("./routes/categoryroutes.js");
+const category = require("./routes/categoryRoutes.js");
 const app = express();
-const bodyparser = require("body-parser");
+const bodyParser = require("body-parser");
 const port = 3000;
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 connectToMongo();
 app.use(
   cors({
@@ -25,6 +25,7 @@ app.use(
       useTempFiles: true,
     })
   );
+  
 app.listen(port, () => {
   console.log("working");
 });
@@ -46,19 +47,5 @@ app.use("/api", userRoutes, adminRoutes,contactUs,category,seederRoutes,jobRoute
 });
 
 
-// app.get("/api/config/paypal", (req, res) =>
-//   res.send(process.env.PAYPAL_CLIENT_ID)
-// );
 
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static(path.join(__dirname, "/frontend/build")));
-
-//   app.get("*", (req, res) =>
-//     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
-//   );
-// } else {
-//   app.get("/", (req, res) => {
-//     res.send("API is running.....");
-//   });
-// }
 
