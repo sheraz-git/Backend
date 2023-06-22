@@ -1,6 +1,6 @@
 const roleModel = require("../models/role");
 
-exports.Middleware = async function (req, res, next) {
+exports.   Middleware = async function (req, res, next) {
   try {
     const roleid = req.headers.role;
     console.log(roleid);

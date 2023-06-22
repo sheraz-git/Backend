@@ -1,6 +1,6 @@
 const contact=require("../models/contactUs");
-const { forContactus } = require("./email");
-exports.contactUserInfo = async (req, res) => {
+const { forContactUs } = require("./email");
+exports.contactUs = async (req, res) => {
     try {
       const { name, email, subject, phone_no,description} = req.body;
       const newContact = new contact({
@@ -12,7 +12,7 @@ exports.contactUserInfo = async (req, res) => {
       });
       // Save the seller to the database
       await newContact.save();
-      await forContactus( name, email, subject, phone_no,description);
+      await forContactUs( name, email, subject, phone_no,description);
       return res.status(201).json({
          message: "Message Send",
         data: newContact,

@@ -1,16 +1,15 @@
 const User = require("../../models/userModel");
-const Country = require("../../models/country");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { forSeller } = require("../email");
+const { forUserEmail } = require("../email");
 cloudinary.config({
   cloud_name: "dsv28ungz",
   api_key: "775634257667667",
   api_secret: "6jMBqRlVALHfbR8udrS3fUf4m1A",
 });
 
-// Upload image controllers
+//Upload image controllers
 exports.uploadImage = async (req, res) => {
   try {
     const file1 = req.files.file;
@@ -23,12 +22,12 @@ exports.uploadImage = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "Server error",
+       message: "Server error",
     });
   }
 };
 // User signup controller
-exports.UserRegister = async (req, res) => {
+exports.userRegister = async (req, res) => {
   try {
     const {
       first_name,
@@ -44,12 +43,9 @@ exports.UserRegister = async (req, res) => {
       account_status,
       email_verification,
       language,
+      role,
       country
     } = req.body;
-
-    // Check if the country exists
-    // const count = await Country.findOne({ country: req.body.country });
-  //  console.log("count", count);
 
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
@@ -58,9 +54,6 @@ exports.UserRegister = async (req, res) => {
         message: "Email already exists",
       });
     }
-
-    // Access the role value from the request object
-    const selectedRole = req.role;
 
     // Create a new user
     const newUser = new User({
@@ -71,8 +64,8 @@ exports.UserRegister = async (req, res) => {
       password,
       service_Title,
       hourly_rate,
-      role: selectedRole._id,
-      country, // Set country ID if it exists, otherwise set it to null
+      role,
+      country,
       phone_no,
       service_Description,
       date_of_birth,
@@ -90,7 +83,9 @@ exports.UserRegister = async (req, res) => {
       });
     }
     else{
-    await forSeller(first_name, last_name,email);
+      console.log(usersave._id);
+     const userId= usersave._id; 
+      await forUserEmail(first_name, last_name,email,userId);
     }
     return res.status(201).json({
       message: "User created and email sent successfully",
@@ -104,10 +99,10 @@ exports.UserRegister = async (req, res) => {
   }
 };
 // User login controller
-exports.UserLogin = async (req, res) => {
+exports.userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("role","-_id");
 
     if (!user) {
       return res.status(404).json({
@@ -131,6 +126,8 @@ exports.UserLogin = async (req, res) => {
         user: {
           id: user._id,
           email: user.email,
+          role: user.role,
+          
           // Include any other relevant user data you want to return
         },
         token,
@@ -141,11 +138,10 @@ exports.UserLogin = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 // Get all users controller
 exports.getAllUser = async (req, res) => {
   try {
-    const users = await User.find().populate("country");
+    const users = await User.find({}, "-password").populate("country");
 
     if (users.length === 0) {
       return res.status(200).json({
@@ -211,7 +207,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 // Update user controller
-exports.UserUpdate = async (req, res) => {
+exports.userUpdate = async (req, res) => {
   try {
     const { id } = req.params;
     let {
@@ -235,10 +231,6 @@ exports.UserUpdate = async (req, res) => {
     if (password) {
       password = await bcrypt.hash(password, 10);
     }
-
-    // Check if the country exists
-    // const count = await Country.findOne({ country });
-    //console.log("count", count);
 
     const update = {
       first_name,

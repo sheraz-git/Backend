@@ -16,20 +16,44 @@ const jobSchema = new mongoose.Schema(
     },
     category: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "categorie",
+      ref: "categories",
       required: true,
     }],
     country: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "countrie",
+      ref: "countries",
       required: true,
     },  
     User: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    }  
-
+    },
+    job_level:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "jobLevel",
+      required: true,
+    },
+    min_experience:{
+         type:Number,
+         require:true
+    },
+    max_experience:{
+      type:Number,
+      require:true
+    },
+    min_projectLength:{
+      type:Number,
+      require:true
+ },
+ max_projectLength:{
+   type:Number,
+   require:true
+ },
+  proposal:{
+    type:Number,
+    require:true
+  }
   },
   {
     timestamps: true,
