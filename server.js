@@ -5,7 +5,8 @@ const adminRoutes = require("./routes/adminRoutes.js");
 const contactUs = require("./routes/contactUs.js");
 const seederRoutes = require("./routes/seederRoutes.js");
 const jobRoutes = require("./routes/jobRoutes.js");
-const category = require("./routes/categoryRoutes.js");
+const category = require("./routes/categoryroutes.js");
+const errorMiddleware = require("./middleware/errorMiddleware.js")
 const app = express();
 const bodyParser = require("body-parser");
 const port = 3000;
@@ -14,6 +15,7 @@ const fileUpload = require("express-fileupload");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 connectToMongo();
+
 app.use(
   cors({
     origin: "http://localhost:3001",
@@ -25,17 +27,14 @@ app.use(
       useTempFiles: true,
     })
   );
-  
-app.listen(port, () => {
-  console.log("working");
-});
-app.get("/", (req, res) => {
+
+app.get("/", (req, res,next) => {
   return res.status(200).json({
     message: "worked  fine",
   });
 });
 
-app.use("/api", userRoutes, adminRoutes,contactUs,category,seederRoutes,jobRoutes, (req, res) => {
+app.use("/api", userRoutes, adminRoutes,contactUs,category,seederRoutes,jobRoutes, (req, res ,next) => {
   res.status(404).json({
     success: false,
     message: "Page not found",
@@ -46,6 +45,8 @@ app.use("/api", userRoutes, adminRoutes,contactUs,category,seederRoutes,jobRoute
   });
 });
 
+app.use(errorMiddleware.errorMiddleware)
 
-
-
+app.listen(port, () => {
+  console.log("working");
+});
