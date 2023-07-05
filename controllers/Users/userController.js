@@ -1,4 +1,6 @@
 const User = require("../../models/userModel");
+const validateRegisterInput=require("../../Validation/userRegisterValidation")
+const validateLoginInput=require("../../Validation/userLoginValidation")
 const ErrorHandler = require("../../utils/errorHandler.js");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
@@ -28,8 +30,15 @@ exports.uploadImage = async (req, res) => {
   }
 };
 // User signup controller
+
 exports.userRegister = async (req, res, next) => {
   try {
+    // Validate user input
+    const { errors, isValid } = validateRegisterInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
     const {
       first_name,
       last_name,
@@ -80,7 +89,7 @@ exports.userRegister = async (req, res, next) => {
       return next(new ErrorHandler("User registration failed", 404));
     }
 
-    //  const userId= usersave._id;
+    // const userId = usersave._id;
     await forUserEmail(first_name, last_name, email, userSave._id);
 
     return res.status(201).json({
@@ -92,15 +101,20 @@ exports.userRegister = async (req, res, next) => {
   }
 };
 // User login controller
-exports.userLogin = async (req, res) => {
+
+exports.userLogin = async (req, res, next) => {
   try {
+    // Validate user input
+    const { errors, isValid } = validateLoginInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
     const { email, password } = req.body;
     const user = await User.findOne({ email }).populate("role", "-_id");
 
     if (!user) {
-      return next(
-        new ErrorHandler("User Email and Password doesn't exist", 401)
-      );
+      return next(new ErrorHandler("User Email and Password doesn't exist", 401));
     }
 
     const isMatch = await user.matchPassword(password);
@@ -118,7 +132,6 @@ exports.userLogin = async (req, res) => {
           id: user._id,
           email: user.email,
           role: user.role,
-
           // Include any other relevant user data you want to return
         },
         token,
@@ -150,7 +163,7 @@ exports.getAllUser = async (req, res) => {
 exports.getUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).populate("country");
+    const user = await User.findById(userId).populate("country","country");
 
     if (!user) {
       return next(new ErrorHandler("User not Found", 404));

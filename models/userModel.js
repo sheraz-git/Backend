@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
     },
     service_Description: {
       type: String,
-      required: true,
+      required: false,
     },
     date_of_birth:{
       type: Date,

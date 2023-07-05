@@ -1,5 +1,7 @@
 const Job = require("../../models/Job");
-exports.createJob = async (req, res) => {
+const ErrorHandling = require("../../utils/errorHandler.js")
+
+exports.createJob = async (req, res,next) => {
   try {
     const {
       service_Title,
@@ -19,10 +21,9 @@ exports.createJob = async (req, res) => {
     // Check if the Job already exists
     const existingJob = await Job.findOne({ service_Title });
     if (existingJob) {
-      return res.status(409).json({
-        message: "service_Title already exists",
-      });
-    }
+      return next(new ErrorHandling("Service title Already Exist" , 409) )
+      };
+    
 
     const newJob = new Job({
       service_Title,
@@ -47,9 +48,7 @@ exports.createJob = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return next(new ErrorHandling() )
   }
 };
 
@@ -68,9 +67,7 @@ exports.getAJob = async (req, res) => {
     );
 
     if (!job) {
-      return res.status(404).json({
-        message: "Job not found",
-      });
+      return next(new ErrorHandling("Job Not Found" , 404) )
     } else {
       return res.status(200).json({
         message: "Job data",
@@ -78,12 +75,11 @@ exports.getAJob = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
+    return next(new ErrorHandling() )
   }
 };
+
+
 exports.getAJobByID = async (req, res) => {
   try {
     const jobID = req.params.id;
@@ -91,9 +87,7 @@ exports.getAJobByID = async (req, res) => {
       .populate("job_level category User"); // Populate multiple fields by separating them with a space
 
     if (!job) {
-      return res.status(200).json({
-        message: "Job doesn't exist",
-      });
+      return next(new ErrorHandling("Job Not Found" , 404) )
     } else {
       return res.status(200).json({
         message: "Job data",
@@ -101,19 +95,38 @@ exports.getAJobByID = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return next(new ErrorHandling() )
   }
 };
+
+
+exports.getAllJobs = async (req, res) => {
+  try {
+   
+    const AllJobs = await Job.find().sort({updatedAt:-1})
+       
+
+    if (!AllJobs) {
+      return next(new ErrorHandling("Job Not Found" , 404) )
+    } else {
+      return res.status(200).json({
+        message: "Job data",
+        count : AllJobs.length,
+        AllJobs,
+      });
+    }
+  } catch (error) {
+    return next(new ErrorHandling() )
+  }
+};
+
+
 exports.deleteAJob = async (req, res) => {
   try {
     const jobId = req.params.id;
     const job = await Job.findByIdAndDelete(jobId);
     if (!job) {
-      return res.status(200).json({
-        message: "user doesn't exist",
-      });
+      return next(new ErrorHandling("Job Not Found" , 404) )
     } else {
       return res.status(200).json({
         message: "Deleted_Successfully",
@@ -137,7 +150,6 @@ exports.updateAJob = async (req, res) => {
       update,
       options
     );
-    console.log("hh");
     if (!updateJob) {
       return res.status(404).json({
         message: "user not found",

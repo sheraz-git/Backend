@@ -78,7 +78,7 @@ exports.forUserConfirmationEmail = async function (req, res, next) {
             <p>Name: ${Email.first_name} ${Email.last_name}</p>
             <p>Please take necessary actions.</p>
             <p>Click the following link to confirm Email</p>
-            <p><a href="http://localhost:3001/#/loading/${email}">Move to Website</a></p>
+            <p><a href="http://localhost:3001/#/loading/${Email._id}">Move to Website</a></p>
             <h2>Thanks and Regards</h2>
             <h2>ZNZ Communication</h2>`
     };
