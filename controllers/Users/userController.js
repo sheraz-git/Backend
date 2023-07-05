@@ -56,7 +56,7 @@ exports.userRegister = async (req, res, next) => {
       role,
       country,
     } = req.body;
-
+    
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
