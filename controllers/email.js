@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const validator = require('validator');
+// const validator = require('validator');
 const ErrorHandler = require("../utils/errorHandler");
 const User = require("../models/userModel");
 exports.forUserEmail = async function (first_name, last_name, email, userId) {
