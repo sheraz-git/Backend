@@ -1,5 +1,5 @@
 const User = require("../../models/userModel");
-const ErrorHandler = require("../../utils/errorHandler.js")
+const ErrorHandler = require("../../utils/errorHandler.js");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -23,12 +23,12 @@ exports.uploadImage = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-       message: "Server error",
+      message: "Server error",
     });
   }
 };
 // User signup controller
-exports.userRegister = async (req, res , next) => {
+exports.userRegister = async (req, res, next) => {
   try {
     const {
       first_name,
@@ -45,13 +45,13 @@ exports.userRegister = async (req, res , next) => {
       email_verification,
       language,
       role,
-      country
+      country,
     } = req.body;
     
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return next(new ErrorHandler("Email is already Exist" , 400))
+      return next(new ErrorHandler("Email is already Exist", 400));
     }
 
     // Create a new user
@@ -71,45 +71,42 @@ exports.userRegister = async (req, res , next) => {
       address,
       account_status,
       email_verification,
-      language
+      language,
     });
 
     // Save the user to the database
-    const usersave=await newUser.save();
-    if (!usersave) {
-  
-      return next(new ErrorHandler( "User registration failed" , 404))
+    const userSave = await newUser.save();
+    if (!userSave) {
+      return next(new ErrorHandler("User registration failed", 404));
     }
-    
-      
-    //  const userId= usersave._id; 
-     await forUserEmail(first_name, last_name,email,usersave._id);
-    
+
+    //  const userId= usersave._id;
+    await forUserEmail(first_name, last_name, email, userSave._id);
+
     return res.status(201).json({
       message: "User created and email sent successfully",
       data: newUser,
     });
   } catch (error) {
-   
-    return next(new ErrorHandler(error))
-   
+    return next(new ErrorHandler(error));
   }
 };
 // User login controller
 exports.userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).populate("role","-_id");
+    const user = await User.findOne({ email }).populate("role", "-_id");
 
     if (!user) {
-      return next(new ErrorHandler("User Email and Password doesn't exist" , 401))
+      return next(
+        new ErrorHandler("User Email and Password doesn't exist", 401)
+      );
     }
 
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-   
-      return next(new ErrorHandler("Incorrect email and Password" , 404))
+      return next(new ErrorHandler("Incorrect email and Password", 404));
     }
 
     const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: "1h" });
@@ -121,15 +118,14 @@ exports.userLogin = async (req, res) => {
           id: user._id,
           email: user.email,
           role: user.role,
-          
+
           // Include any other relevant user data you want to return
         },
         token,
       },
     });
   } catch (error) {
-   
-    return next(new ErrorHandler())
+    return next(new ErrorHandler());
   }
 };
 // Get all users controller
@@ -138,8 +134,7 @@ exports.getAllUser = async (req, res) => {
     const users = await User.find({}, "-password").populate("country");
 
     if (users.length === 0) {
-     
-      return next(new ErrorHandler("No User Found" , 404))
+      return next(new ErrorHandler("No User Found", 404));
     } else {
       return res.status(200).json({
         message: "All user data",
@@ -148,8 +143,7 @@ exports.getAllUser = async (req, res) => {
       });
     }
   } catch (error) {
-    return next(new ErrorHandler())
-    
+    return next(new ErrorHandler());
   }
 };
 // Get single user controller
@@ -159,9 +153,7 @@ exports.getUser = async (req, res) => {
     const user = await User.findById(userId).populate("country");
 
     if (!user) {
-     
-      return next(new ErrorHandler("User not Found" , 404))
-
+      return next(new ErrorHandler("User not Found", 404));
     } else {
       return res.status(200).json({
         message: "User data",
@@ -169,8 +161,7 @@ exports.getUser = async (req, res) => {
       });
     }
   } catch (error) {
-    return next(new ErrorHandler())
-   
+    return next(new ErrorHandler());
   }
 };
 // Delete user controller
@@ -180,14 +171,14 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findByIdAndDelete(userId);
 
     if (!user) {
-      return next(new ErrorHandler("User not Found" , 404))
+      return next(new ErrorHandler("User not Found", 404));
     } else {
       return res.status(200).json({
         message: "User deleted successfully",
       });
     }
   } catch (error) {
-    return next(new ErrorHandler())
+    return next(new ErrorHandler());
   }
 };
 // Update user controller
@@ -208,7 +199,7 @@ exports.userUpdate = async (req, res) => {
       address,
       account_status,
       email_verification,
-       language
+      language,
     } = req.body;
     const options = { new: true }; // Return the updated record
 
@@ -230,13 +221,13 @@ exports.userUpdate = async (req, res) => {
       address,
       account_status,
       email_verification,
-       language
+      language,
     };
 
     const userUpdate = await User.findByIdAndUpdate(id, update, options);
 
     if (!userUpdate) {
-      return next(new ErrorHandler("User not Found" , 404))
+      return next(new ErrorHandler("User not Found", 404));
     }
 
     return res.status(200).json({
@@ -244,6 +235,6 @@ exports.userUpdate = async (req, res) => {
       user: userUpdate,
     });
   } catch (error) {
-    return next(new ErrorHandler())
+    return next(new ErrorHandler());
   }
 };

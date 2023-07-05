@@ -8,12 +8,12 @@ const jobRoutes = require("./routes/jobRoutes.js");
 const category = require("./routes/categoryroutes.js");
 const errorMiddleware = require("./middleware/errorMiddleware.js")
 const app = express();
-const bodyparser = require("body-parser");
+const bodyParser = require("body-parser");
 const port = 3000;
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 connectToMongo();
 
 app.use(
