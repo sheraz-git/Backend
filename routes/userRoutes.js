@@ -20,5 +20,6 @@ router.post("/UserLogin",userRoutes.userLogin);
 router.get("/forUserEmail",mailConfirmation.forUserEmail);
 router.get("/userEmailVerification/:id",mailConfirmation.userEmailVerification);
 router.get("/forUserConfirmationEmail/:userEmail",mailConfirmation.forUserConfirmationEmail);
-
+router.post("/EmailForForgetPassword",mailConfirmation.EmailForForgetPassword);
+router.post("/forgetPassword/:id",mailConfirmation.forgetPassword);
 module.exports = router;

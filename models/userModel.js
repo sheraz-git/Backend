@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    forget_password: {
+      type: String,
+      required: false,
+    },
     service_Title: {
       type: String,
       required: false,

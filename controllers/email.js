@@ -158,5 +158,75 @@ exports.forContactUs = async function ( name, email, subject, phone_no,descripti
 };
 
 
+///forget Password///
+
+exports.EmailForForgetPassword=async (req,res)=>{
+
+try {
+const {email}=req.body;
+
+const checkEmail = await User.findOne({email:email});
+console.log("🚀 ~ file: email.js:169 ~ exports.ForgetEmail= ~ checkEmail:", checkEmail._id);
+if(!checkEmail){
+  return res.status(404).json({
+    message: "Email not found",
+  });
+}
+  // create reusable transporter object using the default SMTP transport
+  let transport = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    service: "Gmail",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: "sherazabbas669@gmail.com",
+      pass: "dyoonnvupsqlgzjy",
+   },
+  });
+
+  let mailOptions = {
+    from: '"sherazabbas669@gmail.com"', // sender address
+    to: checkEmail.email,
+    subject: "To Reset Password Click On The Link below",
+    html: `<h1> Forgot Password </h1><br>
+    <p><a href="http://localhost:3000/#/reset-password/${checkEmail._id}">Click Here to change password</a></p>`
+  };
+  
+  // send email with defined transport object
+  let info = await transport.sendMail(mailOptions);
+  return res.status(200).json({
+    message: "Email Sent",
+  });
+
+} catch (error) {
+  return res.status(500).send("Some error occurred");
+}
+}
 
 
+
+exports.forgetPassword = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { newPassword } = req.body;
+  
+    const user = await User.findById(userId);
+ 
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    } else {
+      user.password = newPassword;
+      await user.save();
+      return res.status(200).json({
+        message: "Password updated successfully",
+      });
+    }
+  } catch (error) {
+    console.error(error); // Log the error message for debugging
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
