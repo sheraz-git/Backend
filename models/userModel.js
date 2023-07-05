@@ -72,6 +72,15 @@ const userSchema = new mongoose.Schema(
       type: String, 
       required: true,
     },
+    thepa: {
+      type: Number, 
+      default:50
+    },
+    balance: {
+      type: Number, 
+      default:0
+    },
+
   },
   {
     timestamps: true,
