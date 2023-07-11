@@ -3,7 +3,8 @@ const mongodb = require("mongodb").MongoClient;
 
 async function connectToMongo() {
     try {
-      await mongoose.connect("mongodb+srv://hamza321:hamza321@cluster0.dw2jcvv.mongodb.net/", { useNewUrlParser: true });
+      await mongoose.connect("mongodb+srv://hamza123:hamza123@cluster0.dw2jcvv.mongodb.net/", 
+      { useNewUrlParser: true });
       console.log('Connected to MongoDB');
     } catch (err) {
        console.error('Error connecting to MongoDB', err);
