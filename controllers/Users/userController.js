@@ -5,7 +5,7 @@ const ErrorHandler = require("../../utils/errorHandler.js");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { forUserEmail } = require("../email");
+const { forUserEmail } = require("../Emails/email");
 cloudinary.config({
   cloud_name: "dsv28ungz",
   api_key: "775634257667667",

@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer");
 // const validator = require('validator');
-const ErrorHandler = require("../utils/errorHandler");
-const User = require("../models/userModel");
+const ErrorHandler = require("../../utils/errorHandler");
+const User = require("../../models/userModel");
+
 exports.forUserEmail = async function (first_name, last_name, email, userId) {
   try {
     // create reusable transporter object using the default SMTP transport
@@ -122,6 +123,7 @@ exports.userEmailVerification = async (req, res) => {
     });
   }
 };
+
 // Contact any person//
 exports.forContactUs = async function ( name, email, subject, phone_no,description) {
   try {

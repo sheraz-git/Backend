@@ -1,5 +1,5 @@
 const express=require("express");
-const admin=require("../controllers/admin");
+const admin=require("../controllers/Admin/admin");
 const role=require("../middleware/addRole");
 const router = express.Router();
 

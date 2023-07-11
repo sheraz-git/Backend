@@ -1,6 +1,6 @@
 const express=require("express");
 const userRoutes=require("../controllers/Users/userController");
-const mailConfirmation=require("../controllers/email");
+const mailConfirmation=require("../controllers/Emails/email");
 const protect=require("../middleware/authMiddleware");
 const router = express.Router();
 
