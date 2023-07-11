@@ -32,6 +32,52 @@ exports.categorySeeder = async function (req, res) {
                 {
                     category: 'Photography'
                 },
+                {
+                    category: 'Web Development'
+                },
+                {
+                    category: 'Mobile App Development'
+                },
+                {
+                    category: 'Game Development'
+                },
+                {
+                    category: 'UI/UX Design'
+                },
+                {
+                    category: 'Illustration'
+                },
+                {
+                    category: '3D Modeling & Rendering'
+                },
+                {
+                    category: 'Data Science & Analytics'
+                },
+                {
+                    category: 'Cybersecurity'
+                },
+                {
+                    category: 'Content Writing & Editing'
+                },
+                {
+                    category: 'Social Media Management'
+                },
+                {
+                    category: 'Search Engine Optimization (SEO)'
+                },
+                {
+                    category: 'E-commerce Development'
+                },
+                {
+                    category: 'Virtual Reality (VR) Development'
+                },
+                {
+                    category: 'Augmented Reality (AR) Development'
+                },
+                {
+                    category: 'Music Production & Audio Engineering'
+                }
+                 
             ];
             csvtojson()
                 .fromFile("public/category.csv")

@@ -142,7 +142,7 @@ exports.userLogin = async (req, res, next) => {
   }
 };
 // Get all users controller
-exports.getAllUser = async (req, res) => {
+exports.getAllUser = async (req, res, next) => {
   try {
     const users = await User.find({}, "-password").populate("country");
 
@@ -160,7 +160,7 @@ exports.getAllUser = async (req, res) => {
   }
 };
 // Get single user controller
-exports.getUser = async (req, res) => {
+exports.getUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const user = await User.findById(userId).populate("country","country");
@@ -178,7 +178,7 @@ exports.getUser = async (req, res) => {
   }
 };
 // Delete user controller
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const user = await User.findByIdAndDelete(userId);
@@ -195,7 +195,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 // Update user controller
-exports.userUpdate = async (req, res) => {
+exports.userUpdate = async (req, res, next) => {
   try {
     const { id } = req.params;
     let {

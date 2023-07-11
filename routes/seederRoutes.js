@@ -1,6 +1,6 @@
 const express=require("express");
 const roleRoutes=require("../controllers/Seeder/roleSeeder");
-const seeder=require("../controllers/Seeder/countrySeeder");
+const seeder=require("../controllers/Seeder/countryseeder");
 const router = express.Router();
 //role
 

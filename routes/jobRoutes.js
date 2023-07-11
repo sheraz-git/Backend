@@ -1,12 +1,12 @@
 const express=require("express");
 const job=require("../controllers/Users/Job");
 const protect=require("../middleware/authMiddleware");
-const jobLevels=require("../controllers/Seeder/jobLevelSeeder");
+const jobLevels=require("../controllers/Seeder/joblevelseeder");
 
 const router = express.Router();
 
 // Job routes
-router.post("/PostAJob",protect.verifyToken,job.createJob);
+router.post("/PostAJob/:userId", protect.verifyToken, job.createJob);
 router.get("/getAJob/:id",job.getAJob);
 router.get("/getAllJobs",job.getAllJobs);
 router.get("/getAJobByID/:id",job.getAJobByID);
