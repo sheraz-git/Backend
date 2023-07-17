@@ -1,6 +1,6 @@
 const User = require("../../models/userModel");
-const validateRegisterInput=require("../../Validation/userRegisterValidation")
-const validateLoginInput=require("../../Validation/userLoginValidation")
+const validateRegisterInput = require("../../Validation/userRegisterValidation");
+const validateLoginInput = require("../../Validation/userLoginValidation");
 const ErrorHandler = require("../../utils/errorHandler.js");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
@@ -56,7 +56,7 @@ exports.userRegister = async (req, res, next) => {
       role,
       country,
     } = req.body;
-    
+
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -114,7 +114,9 @@ exports.userLogin = async (req, res, next) => {
     const user = await User.findOne({ email }).populate("role", "-_id");
 
     if (!user) {
-      return next(new ErrorHandler("User Email and Password doesn't exist", 401));
+      return next(
+        new ErrorHandler("User Email and Password doesn't exist", 401)
+      );
     }
 
     const isMatch = await user.matchPassword(password);
@@ -163,7 +165,7 @@ exports.getAllUser = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).populate("country","country");
+    const user = await User.findById(userId).populate("country", "country");
 
     if (!user) {
       return next(new ErrorHandler("User not Found", 404));
@@ -253,17 +255,17 @@ exports.userUpdate = async (req, res, next) => {
 };
 // Get single user controller
 exports.getTopSeller = async (req, res, next) => {
-        try {
-    const users = await User.find()
+  try {
+    const users = await User.find({ role: "64aee9587e73d38366c4905a" })
       .limit(5)
-      .populate({ 
+      .populate({
         path: "country",
-        select: "country"
-      }) .populate({ 
-        path: "role",
-        select: "role"
+        select: "country",
       })
-
+      .populate({
+        path: "role",
+        select: "role",
+      });
 
     if (!users) {
       return next(new ErrorHandler("No Users Found", 404));
