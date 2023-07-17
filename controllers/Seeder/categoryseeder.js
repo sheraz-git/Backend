@@ -4,10 +4,10 @@ const csvtojson = require("csvtojson");
 exports.categorySeeder = async function (req, res) {
     try {
         const categoryData = await CategoryModel.find({});
-        console.log(categoryData);
+       // console.log(categoryData);
 
         const count = await CategoryModel.count();
-        console.log(count);
+     //   console.log(count);
         
         if (categoryData == null) {
             return res.status(200).json({

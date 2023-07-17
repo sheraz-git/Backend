@@ -251,3 +251,30 @@ exports.userUpdate = async (req, res, next) => {
     return next(new ErrorHandler());
   }
 };
+// Get single user controller
+exports.getTopSeller = async (req, res, next) => {
+  try {
+    const users = await User.find()
+      .limit(5)
+      .populate({ 
+        path: "country",
+        select: "country"
+      }) .populate({ 
+        path: "role",
+        select: "role"
+      })
+
+
+    if (!users) {
+      return next(new ErrorHandler("No Users Found", 404));
+    } else {
+      return res.status(200).json({
+        message: "User data",
+        count: users.length,
+        users,
+      });
+    }
+  } catch (error) {
+    return next(new ErrorHandler());
+  }
+};

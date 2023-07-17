@@ -191,7 +191,7 @@ if(!checkEmail){
     to: checkEmail.email,
     subject: "To Reset Password Click On The Link below",
     html: `<h1> Forgot Password </h1><br>
-    <p><a href="http://localhost:3000/#/reset-password/${checkEmail._id}">Click Here to change password</a></p>`
+    <p><a href="http://localhost:3001/#/reset-password?id=/${checkEmail._id}">Click Here to change password</a></p>`
   };
   
   // send email with defined transport object
