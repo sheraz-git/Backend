@@ -253,7 +253,7 @@ exports.userUpdate = async (req, res, next) => {
 };
 // Get single user controller
 exports.getTopSeller = async (req, res, next) => {
-  try {
+   try {
     const users = await User.find()
       .limit(5)
       .populate({ 
