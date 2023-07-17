@@ -29,8 +29,11 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     service_Title: {
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: "categories",
+      // required: true,
       type: String,
-      required: false,
+      // required: true,
     },
     hourly_rate: {
       type: String,

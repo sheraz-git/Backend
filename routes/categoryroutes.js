@@ -1,5 +1,5 @@
 const express=require("express");
-const seeder=require("../controllers/Seeder/categorySeeder");
+const seeder=require("../controllers/Seeder/categoryseeder");
 const portfolio=require("../controllers/Users/addPortfolio");
 const protect=require("../middleware/authMiddleware");
 

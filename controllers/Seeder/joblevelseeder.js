@@ -4,10 +4,10 @@ const csvtojson = require("csvtojson");
 exports.jobLevelSeeder = async function (req, res) {
     try {
         const jobLevelData = await JoblevelModel.find({});
-        console.log(jobLevelData);
+     //   console.log(jobLevelData);
 
         const count = await JoblevelModel.countDocuments();
-        console.log(count);
+     //   console.log(count);
         
         if (jobLevelData == null) {
             return res.status(200).json({

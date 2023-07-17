@@ -1,15 +1,22 @@
-const express=require("express");
-const proposalController=require("../controllers/Users/proposalController");
-// const mailConfirmation=require("../controllers/email");
-// const protect=require("../middleware/authMiddleware");
+const express = require("express");
+const proposal = require("../controllers/Proposal/Crud");
+const protect = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-/// User///
-router.post("/addProposal",proposalController.addProposal);
-// router.post("/UserRegister",userRoutes.userRegister);
-// router.get("/getUser/:id",protect.verifyToken,userRoutes.getUser);
-// router.get("/getAllUser",userRoutes.getAllUser);
-// router.delete("/deleteUser/:id",protect.verifyToken,userRoutes.deleteUser);
-// router.put("/UserUpdate/:id",protect.verifyToken,userRoutes.userUpdate);
+// Proposal routes
+router.post(
+  "/createProposal/:userId/:jobId",
+  protect.verifyToken,
+  proposal.createProposal
+);
+router.get("/getProposal", proposal.getProposal);
+router.get("/getProposalsByJob/:jobId", proposal.getProposalsByJob);
+router.get("/getProposal/:id", proposal.getAProposalById);
+router.delete(
+  "/deleteProposal/:userId/:proposalId",
+  protect.verifyToken,
+  proposal.deleteProposal
+);
 
 module.exports = router;

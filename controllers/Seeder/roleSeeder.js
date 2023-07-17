@@ -4,10 +4,10 @@ const csvtojson = require("csvtojson");
 exports.roleSeeder = async function (req, res) {
     try {
         const roleData = await rolemodel.find({});
-        console.log(roleData);
+      //  console.log(roleData);
 
         const count = await rolemodel.count();
-        console.log(count);
+     //   console.log(count);
         
         if (roleData == null) {
             return res.status(200).json({

@@ -1,5 +1,5 @@
-const contact=require("../models/contactUs");
-const { forContactUs } = require("./email");
+const contact=require("../../models/contactUs");
+const { forContactUs } = require("../Emails/email");
 exports.contactUs = async (req, res) => {
     try {
       const { name, email, subject, phone_no,description} = req.body;

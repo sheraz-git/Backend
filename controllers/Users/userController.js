@@ -5,7 +5,7 @@ const ErrorHandler = require("../../utils/errorHandler.js");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { forUserEmail } = require("../email");
+const { forUserEmail } = require("../Emails/email");
 cloudinary.config({
   cloud_name: "dsv28ungz",
   api_key: "775634257667667",
@@ -142,7 +142,7 @@ exports.userLogin = async (req, res, next) => {
   }
 };
 // Get all users controller
-exports.getAllUser = async (req, res) => {
+exports.getAllUser = async (req, res, next) => {
   try {
     const users = await User.find({}, "-password").populate("country");
 
@@ -160,7 +160,7 @@ exports.getAllUser = async (req, res) => {
   }
 };
 // Get single user controller
-exports.getUser = async (req, res) => {
+exports.getUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const user = await User.findById(userId).populate("country","country");
@@ -178,7 +178,7 @@ exports.getUser = async (req, res) => {
   }
 };
 // Delete user controller
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const user = await User.findByIdAndDelete(userId);
@@ -195,7 +195,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 // Update user controller
-exports.userUpdate = async (req, res) => {
+exports.userUpdate = async (req, res, next) => {
   try {
     const { id } = req.params;
     let {
@@ -247,6 +247,33 @@ exports.userUpdate = async (req, res) => {
       message: "User updated",
       user: userUpdate,
     });
+  } catch (error) {
+    return next(new ErrorHandler());
+  }
+};
+// Get single user controller
+exports.getTopSeller = async (req, res, next) => {
+        try {
+    const users = await User.find()
+      .limit(5)
+      .populate({ 
+        path: "country",
+        select: "country"
+      }) .populate({ 
+        path: "role",
+        select: "role"
+      })
+
+
+    if (!users) {
+      return next(new ErrorHandler("No Users Found", 404));
+    } else {
+      return res.status(200).json({
+        message: "User data",
+        count: users.length,
+        users,
+      });
+    }
   } catch (error) {
     return next(new ErrorHandler());
   }

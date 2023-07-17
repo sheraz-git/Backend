@@ -1,5 +1,5 @@
 const express=require("express");
-const contact=require("../controllers/contactUs");
+const contact=require("../controllers/ContactUs/contactUs");
 const router = express.Router();
 
 /// contact us ///
