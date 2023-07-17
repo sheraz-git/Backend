@@ -253,7 +253,7 @@ exports.userUpdate = async (req, res, next) => {
     return next(new ErrorHandler());
   }
 };
-// Get single user controller
+// Get TopSeller
 exports.getTopSeller = async (req, res, next) => {
   try {
     const users = await User.find({ role: "64aee9587e73d38366c4905a" })
@@ -267,16 +267,16 @@ exports.getTopSeller = async (req, res, next) => {
         select: "role",
       });
 
-    if (!users) {
+    if (!users || users.length === 0) {
       return next(new ErrorHandler("No Users Found", 404));
-    } else {
-      return res.status(200).json({
-        message: "User data",
-        count: users.length,
-        users,
-      });
     }
+
+    return res.status(200).json({
+      message: "User data",
+      count: users.length,
+      users,
+    });
   } catch (error) {
-    return next(new ErrorHandler());
+    return next(new ErrorHandler("Internal Server Error", 500));
   }
 };
