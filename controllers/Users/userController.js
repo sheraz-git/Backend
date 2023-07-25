@@ -1,4 +1,5 @@
 const User = require("../../models/userModel");
+const Role = require("../../models/role");
 const validateRegisterInput = require("../../Validation/userRegisterValidation");
 const validateLoginInput = require("../../Validation/userLoginValidation");
 const ErrorHandler = require("../../utils/errorHandler.js");
@@ -100,8 +101,8 @@ exports.userRegister = async (req, res, next) => {
     return next(new ErrorHandler(error));
   }
 };
-// User login controller
 
+// User login controller
 exports.userLogin = async (req, res, next) => {
   try {
     // Validate user input
@@ -125,7 +126,7 @@ exports.userLogin = async (req, res, next) => {
       return next(new ErrorHandler("Incorrect email and Password", 404));
     }
 
-    const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: "1h" });
+    const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: "1w" });
 
     return res.status(200).json({
       message: "Login successful",
@@ -200,46 +201,13 @@ exports.deleteUser = async (req, res, next) => {
 exports.userUpdate = async (req, res, next) => {
   try {
     const { id } = req.params;
-    let {
-      first_name,
-      last_name,
-      email,
-      password,
-      service_Title,
-      hourly_rate,
-      phone_no,
-      service_Description,
-      country,
-      date_of_birth,
-      address,
-      account_status,
-      email_verification,
-      language,
-    } = req.body;
-    const options = { new: true }; // Return the updated record
-
-    if (password) {
-      password = await bcrypt.hash(password, 10);
+    const bodyData = req.body;
+    if (bodyData.password) {
+      bodyData.password = await bcrypt.hash(bodyData.password, 10);
     }
-
-    const update = {
-      first_name,
-      last_name,
-      email,
-      password,
-      service_Title,
-      hourly_rate,
-      phone_no,
-      service_Description,
-      country,
-      date_of_birth,
-      address,
-      account_status,
-      email_verification,
-      language,
-    };
-
-    const userUpdate = await User.findByIdAndUpdate(id, update, options);
+    const userUpdate = await User.findByIdAndUpdate(id, bodyData, {
+      new: true,
+    });
 
     if (!userUpdate) {
       return next(new ErrorHandler("User not Found", 404));
@@ -250,13 +218,18 @@ exports.userUpdate = async (req, res, next) => {
       user: userUpdate,
     });
   } catch (error) {
-    return next(new ErrorHandler());
+    return next(new ErrorHandler("Internal Server Error", 500));
   }
 };
 // Get TopSeller
 exports.getTopSeller = async (req, res, next) => {
   try {
-    const users = await User.find({ role: "64aee9587e73d38366c4905a" })
+    const role = await Role.findOne({ role: "seller" });
+    if (!role) {
+      return next(new ErrorHandler("Role not found", 500));
+    }
+
+    const users = await User.find({ role: role._id })
       .limit(5)
       .populate({
         path: "country",

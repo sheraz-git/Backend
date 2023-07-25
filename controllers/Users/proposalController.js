@@ -9,14 +9,6 @@ cloudinary.config({
 
 exports.addProposal = async (req, res) => {
   try {
-    // const file1 = req.files.file;
-    // let result1 = await cloudinary.uploader.upload(file1.tempFilePath);
-    // let fileUrl = req.files.portfolio_Document.tempFilePath
-    // // console.log(req.body, req.files.portfolio_Document.tempFilePath);
-    // const uploadResponse = await cloudinary.uploader.upload(fileUrl, { resource_type: 'raw' ,folder: 'documents' });
-
-    // console.log(uploadResponse,"lllllllllllllllllllllll");
-  
     const { totalBids,
       servicesFee,
       payment,
@@ -24,15 +16,7 @@ exports.addProposal = async (req, res) => {
       coverLetter,
       websiteLink,
       attachment} = req.body;
-    console.log("body", req.body);
 
-    // Check if the Job already exists
-    // const proposal = await Portfolio.findOne({ Portfolio_title });
-    // if (existingPortfolio) {
-    //   return res.status(409).json({
-    //     message: "Portfolio already exists",
-    //   });
-    // }
     const proposal = new Proposal({
         totalBids,
         servicesFee,
@@ -60,9 +44,9 @@ exports.addProposal = async (req, res) => {
 exports.getPortfolio = async (req, res) => {
   try {
     const portfolioId = req.params.id;
-    console.log(portfolioId);
+    
     const portfolio = await Portfolio.findById(portfolioId);
-    console.log(portfolio);
+  
     if (!portfolio) {
       return res.status(404).json({
         message: "portfolio not found",

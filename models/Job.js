@@ -15,53 +15,44 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
     requirements: {
-      type: String,
-      required: true
-    },
-    category: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "categories",
+      type: [String],
       required: true,
-    }],
+    },
+    category: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "categories",
+        required: true,
+      },
+    ],
     country: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "countries",
-      required: true,
-    },  
+      required: false,
+    },
     User: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    job_level:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "jobLevel",
-      required: true,
+
+    min_projectLength: {
+      type: Number,
+      require: true,
     },
-    min_experience:{
-         type:Number,
-         require:true
+    max_projectLength: {
+      type: Number,
+      require: true,
     },
-    max_experience:{
-      type:Number,
-      require:true
+    proposal: {
+      type: Number,
+      require: false,
+      default: 0,
     },
-    min_projectLength:{
-      type:Number,
-      require:true
- },
- max_projectLength:{
-   type:Number,
-   require:true
- },
-  proposal:{
-    type:Number,
-    require:true
-  }
   },
   {
     timestamps: true,
-  }  
+  }
 );
 
 const PostJob = mongoose.model("PostJob", jobSchema);

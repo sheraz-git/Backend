@@ -6,11 +6,11 @@ const contactUs = require("./routes/contactUs.js");
 const seederRoutes = require("./routes/seederRoutes.js");
 const jobRoutes = require("./routes/jobRoutes.js");
 const category = require("./routes/categoryroutes.js");
-const proposalRoutes = require('./routes/proposalRoutes.js')
-const chatRoutes = require('./routes/chatRoutes.js')
-const messageRoutes = require('./routes/messageRoutes.js')
+const proposalRoutes = require("./routes/proposalRoutes.js");
+const chatRoutes = require("./routes/chatRoutes.js");
+const messageRoutes = require("./routes/messageRoutes.js");
 
-const errorMiddleware = require("./middleware/errorMiddleware.js")
+const errorMiddleware = require("./middleware/errorMiddleware.js");
 const app = express();
 const bodyParser = require("body-parser");
 const port = 3000;
@@ -25,35 +25,43 @@ app.use(
     origin: "http://localhost:3001",
     optionsSuccessStatus: 200,
   })
-  );
-  app.use(
-    fileUpload({
-      useTempFiles: true,
-    })
-  );
+);
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 
-app.get("/", (req, res,next) => {
+app.get("/", (req, res, next) => {
   return res.status(200).json({
     message: "worked  fine",
   });
 });
 
-<<<<<<< HEAD
-app.use("/api", userRoutes, adminRoutes,contactUs,category,seederRoutes,jobRoutes,proposalRoute, (req, res ,next) => {
-=======
-app.use("/api", userRoutes, adminRoutes,contactUs,category,seederRoutes,jobRoutes, proposalRoutes,chatRoutes,messageRoutes, (req, res ,next) => {
->>>>>>> a0caba916a777cf92dc31ed1afdb5399b703a03a
-  res.status(404).json({
-    success: false,
-    message: "Page not found",
-    error: {
-      statusCode: 404,
-      message: "You reached a route that is not defined on this server",
-    },
-  });
-});
+app.use(
+  "/api",
+  userRoutes,
+  adminRoutes,
+  contactUs,
+  category,
+  seederRoutes,
+  jobRoutes,
+  proposalRoutes,
+  chatRoutes,
+  messageRoutes,
+  (req, res, next) => {
+    res.status(404).json({
+      success: false,
+      message: "Page not found",
+      error: {
+        statusCode: 404,
+        message: "You reached a route that is not defined on this server",
+      },
+    });
+  }
+);
 
-app.use(errorMiddleware.errorMiddleware)
+app.use(errorMiddleware.errorMiddleware);
 
 app.listen(port, () => {
   console.log("working");
