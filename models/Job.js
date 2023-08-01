@@ -26,9 +26,8 @@ const jobSchema = new mongoose.Schema(
       },
     ],
     country: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "countries",
-      required: false,
+      type: String,
+      required: true,
     },
     User: {
       type: mongoose.Schema.Types.ObjectId,

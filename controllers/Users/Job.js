@@ -1,6 +1,7 @@
 const Job = require("../../models/Job");
 const ErrorHandling = require("../../utils/errorHandler.js");
 const User = require("../../models/userModel"); // Import the User model
+const Country = require("../../models/country"); // Import the User model
 const Role = require("../../models/role");
 
 exports.createJob = async (req, res, next) => {
@@ -11,7 +12,6 @@ exports.createJob = async (req, res, next) => {
       service_Description,
       requirements,
       category,
-      country,
       min_projectLength,
       max_projectLength,
       Proposal,
@@ -20,7 +20,8 @@ exports.createJob = async (req, res, next) => {
     const userId = req.params.userId; // Access user ID from query parameters
 
     // Get the user from the User collection
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("country");
+
     if (!user) {
       return next(new ErrorHandling("User not found", 404));
     }
@@ -83,7 +84,7 @@ exports.createJob = async (req, res, next) => {
       service_Description,
       requirements,
       category,
-      country,
+      country: user.country.country,
       User: userId, // Set the User field as the user ID
       min_projectLength,
       max_projectLength,
@@ -141,9 +142,9 @@ exports.getAJob = async (req, res, next) => {
 exports.getAJobByID = async (req, res, next) => {
   try {
     const jobID = req.params.id;
-      console.log(jobID);
-    const job = await Job.findOne({ _id: jobID })
-console.log(job);
+    console.log(jobID);
+    const job = await Job.findOne({ _id: jobID });
+    console.log(job);
     if (!job) {
       return next(new ErrorHandling("Job Not Found", 404));
     } else {
@@ -219,4 +220,19 @@ exports.updateAJob = async (req, res) => {
       message: "Server error",
     });
   }
+};
+
+exports.jobSearch = async (req, res) => {
+  try {
+    const { service_Title } = req.body;
+
+    let filteredjobs = await Job.find();
+    if (service_Title) {
+      filteredService_Title = filteredjobs.filter((job) =>
+        job.service_Title.toLowerCase().includes(service_Title.toLowerCase())
+      );
+    }
+
+    res.status(200).json(filteredjob);
+  } catch (error) {}
 };

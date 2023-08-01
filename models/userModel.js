@@ -29,11 +29,7 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     service_Title: {
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "categories",
-      // required: true,
       type: String,
-      // required: true,
     },
     hourly_rate: {
       type: String,
@@ -57,37 +53,36 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    date_of_birth:{
+    date_of_birth: {
       type: Date,
-      required: true,   
+      required: true,
     },
-    address:{
+    address: {
       type: String,
-      required: true,   
+      required: true,
     },
     account_status: {
-      type: String, 
+      type: String,
       required: true,
-      default:"active"
+      default: "active",
     },
     email_verification: {
-      type: Boolean, 
+      type: Boolean,
       required: true,
-      default:false
+      default: false,
     },
     language: {
-      type: String, 
+      type: String,
       required: true,
     },
     thepa: {
-      type: Number, 
-      default:50
+      type: Number,
+      default: 1000,
     },
     balance: {
-      type: Number, 
-      default:0
+      type: Number,
+      default: 0,
     },
-
   },
   {
     timestamps: true,

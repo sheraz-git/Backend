@@ -12,6 +12,7 @@ router.get("/getAllUser",userRoutes.getAllUser);
 router.delete("/deleteUser/:id",protect.verifyToken,userRoutes.deleteUser);
 router.put("/UserUpdate/:id",protect.verifyToken,userRoutes.userUpdate);
 router.get("/getTopSeller",userRoutes.getTopSeller);
+router.get("/userSearch",userRoutes.userSearch);
 //Auth//
 router.post("/UserLogin",userRoutes.userLogin);
 

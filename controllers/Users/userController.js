@@ -253,3 +253,20 @@ exports.getTopSeller = async (req, res, next) => {
     return next(new ErrorHandler("Internal Server Error", 500));
   }
 };
+
+exports.userSearch = async (req, res) => {
+  try {
+    const { fullName } = req.body;
+    console.log(fullName);
+    let filteredUser = await User.find();
+    if (fullName) {
+      filteredfullName = filteredUser.filter((user) => {
+        let fullname = `${user.first_name} ${user.last_name}`;
+        return fullname.toLowerCase().includes(fullName.toLowerCase());
+      });
+   
+    }
+
+    res.status(200).json(filteredfullName);
+  } catch (error) {}
+};
