@@ -131,10 +131,9 @@ exports.getAJob = async (req, res, next) => {
 exports.getAJobByID = async (req, res, next) => {
   try {
     const jobID = req.params.id;
-    const job = await Job.findOne({ _id: jobID })
-      .populate("job_level category User"); // Populate multiple fields by separating them with a space
-
-      
+    console.log("🚀 ~ file: Job.js:134 ~ exports.getAJobByID= ~ jobID:", jobID)
+    const job = await Job.findOne({ _id: jobID }).populate("category User"); 
+    console.log("🚀 ~ file: Job.js:137 ~ exports.getAJobByID= ~ job:", job)
 
     if (!job) {
       return next(new ErrorHandling("Job Not Found" , 404) )
@@ -153,7 +152,7 @@ exports.getAJobByID = async (req, res, next) => {
 exports.getAllJobs = async (req, res, next) => {
   try {
    
-    const AllJobs = await Job.find().sort({updatedAt:-1})
+    const AllJobs = await Job.find().sort({updatedAt:-1}).populate("category")
        
 
     if (!AllJobs) {
