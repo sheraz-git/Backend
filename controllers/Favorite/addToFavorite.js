@@ -32,3 +32,22 @@ exports.getAllFavorite = async (req, res) => {
       return res.status(500).json({ error: "Failed to retrieve favorites" });
     }
   };
+
+
+
+exports.deleteFavorites = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedFavorites = await Favorite.findOneAndDelete({ userId: id });
+
+    if (!deletedFavorites) {
+      return res.status(404).json({ error: "Favorites not found" });
+    }
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("Error", error);
+    return res.status(500).json({ error: "Failed to delete favorites" });
+  }
+};
