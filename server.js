@@ -7,6 +7,7 @@ const seederRoutes = require("./routes/seederRoutes.js");
 const jobRoutes = require("./routes/jobRoutes.js");
 const category = require("./routes/categoryroutes.js");
 const proposalRoutes = require("./routes/proposalRoutes.js");
+const favoriteRoutes = require("./routes/addToFavorite.js");
 const chatRoutes = require("./routes/chatRoutes.js");
 const messageRoutes = require("./routes/messageRoutes.js");
 
@@ -49,6 +50,7 @@ app.use(
   proposalRoutes,
   chatRoutes,
   messageRoutes,
+  favoriteRoutes,
   (req, res, next) => {
     res.status(404).json({
       success: false,
