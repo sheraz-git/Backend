@@ -23,23 +23,23 @@ exports.favoriteAdded = async (req, res) => {
 };
 
 exports.getAllFavorite = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const favorites = await Favorite.find({ userId: id }).populate("userId").populate("jobId")
-      return res.json(favorites);
-    } catch (error) {
-      console.log("Error", error);
-      return res.status(500).json({ error: "Failed to retrieve favorites" });
-    }
-  };
-
-
+  try {
+    const { id } = req.params;
+    const favorites = await Favorite.find({ userId: id })
+      .populate("userId")
+      .populate("jobId");
+    return res.json(favorites);
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(500).json({ error: "Failed to retrieve favorites" });
+  }
+};
 
 exports.deleteFavorites = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedFavorites = await Favorite.findOneAndDelete({ userId: id });
+    const deletedFavorites = await Favorite.findOneAndDelete({ _id: id });
 
     if (!deletedFavorites) {
       return res.status(404).json({ error: "Favorites not found" });

@@ -10,7 +10,7 @@ router.post(
   protect.verifyToken,
   proposal.createProposal
 );
-router.get("/getProposal", proposal.getProposal);
+router.get("/getAllProposal", proposal.getAllProposal);
 router.get("/getProposalsByJob/:jobId", proposal.getProposalsByJob);
 router.get("/getProposal/:id", proposal.getAProposalById);
 router.delete(
