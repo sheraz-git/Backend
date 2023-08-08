@@ -34,8 +34,18 @@ exports.uploadImage = async (req, res) => {
 
 exports.createProposal = async (req, res, next) => {
   try {
-    const { coverLetter, description, bidAmount, deliveryTime, githubLink } =
-      req.body;
+    const {
+      coverLetter,
+      description,
+      bidAmount,
+      deliveryTime,
+      githubLink,
+      duration,
+      payment,
+      serviceCharges,
+      websiteLink,
+      imagesUrl,
+    } = req.body;
 
     const userId = req.params.userId;
     const jobId = req.params.jobId;
@@ -105,6 +115,11 @@ exports.createProposal = async (req, res, next) => {
       bidAmount,
       deliveryTime,
       githubLink,
+      duration,
+      payment,
+      serviceCharges,
+      websiteLink,
+      imagesUrl,
     });
 
     // Save the proposal to the database
@@ -115,20 +130,15 @@ exports.createProposal = async (req, res, next) => {
       data: newProposal,
     });
   } catch (error) {
-    console.error(error);
     return next(new ErrorHandling());
   }
 };
-
-
-
-
 
 exports.deleteProposal = async (req, res, next) => {
   try {
     const proposalId = req.params.proposalId;
     const userId = req.params.userId;
-  
+
     // Get the user from the User collection
     const user = await User.findById(userId);
     if (!user) {
@@ -182,7 +192,28 @@ exports.getAllProposal = async (req, res, next) => {
   }
 };
 
+exports.updateProposal = async (req, res) => {
+  try {
+    const proposalId = req.params.proposalId;
+    const update = req.body;
+    const options = { new: true }; // Return the updated record
 
+    const updatePropoasal = await Proposal.findOneAndUpdate(
+      { _id: proposalId },
+      update,
+      options
+    );
+    if (!updatePropoasal) {
+      return next(new ErrorHandling("Proposal not found", 404));
+    }
+    return res.status(200).json({
+      message: "Propoasal updated",
+      updatePropoasal,
+    });
+  } catch (error) {
+    return next(new ErrorHandling());
+  }
+};
 
 exports.getAProposalById = async (req, res, next) => {
   try {
