@@ -32,7 +32,7 @@ exports.getAllFavorite = async (req, res) => {
     const favorites = await Favorite.find({ userId: id })
       .populate("userId")
       .populate("jobId");
-    return res.json(favorites);
+    return res.json({message:"Favorite Jobs Fetched Successfully", Jobs:favorites});
   } catch (error) {
     console.log("Error", error);
     return res.status(500).json({ error: "Failed to retrieve favorites" });
