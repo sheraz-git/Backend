@@ -17,16 +17,15 @@ exports.createJob = async (req, res, next) => {
       Proposal,
     } = req.body;
 
-    const userId = req.params.userId; // Access user ID from query parameters
+    const userId = req.params.userId;
 
-    // Get the user from the User collection
     const user = await User.findById(userId).populate("country");
 
     if (!user) {
       return next(new ErrorHandling("User not found", 404));
     }
 
-    // Check if the user's role is 'buyer'
+
     const role = await Role.findOne({ role: "buyer" });
     if (!role) {
       return next(new ErrorHandling("Role not found", 500));
@@ -36,17 +35,17 @@ exports.createJob = async (req, res, next) => {
       return next(new ErrorHandling("Only Buyers Can Post a Job", 403));
     }
 
-    // Check if the user's email has been verified
+
     if (!user.email_verification) {
       return next(
         new ErrorHandling(
-          "Email not verified. Please verify your email to send a proposal",
+          "Email not verified. Please verify your email to create a Job",
           403
         )
       );
     }
 
-    // Check if the user has sufficient "thepa" value to post a job
+
     if (user.thepa < 10) {
       return next(
         new ErrorHandling(
@@ -56,7 +55,7 @@ exports.createJob = async (req, res, next) => {
       );
     }
 
-    // Check if the user is posting the job again within 7 days
+
     const previousJob = await Job.findOne({
       User: userId,
       service_Title,
@@ -74,9 +73,9 @@ exports.createJob = async (req, res, next) => {
       );
     }
 
-    // Deduct 10 from thepa field in the user model
+   
     user.thepa -= 10;
-    await user.save(); // Save the updated user object
+    await user.save(); 
 
     const newJob = new Job({
       service_Title,
@@ -85,13 +84,13 @@ exports.createJob = async (req, res, next) => {
       requirements,
       category,
       country: user.country.country,
-      User: userId, // Set the User field as the user ID
+      User: userId,
       min_projectLength,
       max_projectLength,
       Proposal,
     });
 
-    // Save the job to the database
+   
     await newJob.save();
     return res.status(201).json({
       message: "New job created",
@@ -106,11 +105,11 @@ exports.createJob = async (req, res, next) => {
 exports.getAJob = async (req, res, next) => {
   try {
     const categoryId = req.params.id;
-    // console.log(categoryId);
+    
     const job = await Job.find({ category: { $in: [categoryId] } })
       .populate("category")
       .populate("job_level");
-    // console.log(job);
+    
     const count = job.length;
     if (count === 0) {
       return next(
@@ -118,7 +117,6 @@ exports.getAJob = async (req, res, next) => {
       );
     }
 
-    // Increment the count in the database
     await Job.findOneAndUpdate(
       {},
       { $inc: { count: 1 } },
@@ -201,7 +199,7 @@ exports.updateAJob = async (req, res) => {
   try {
     const jobId = req.params.id;
     const update = req.body;
-    const options = { new: true }; // Return the updated record
+    const options = { new: true }; 
 
     const updateJob = await Job.findOneAndUpdate(
       { _id: jobId },
@@ -218,7 +216,7 @@ exports.updateAJob = async (req, res) => {
       updateJob,
     });
   } catch (error) {
-    console.error(error); // Log the error message for debugging
+    console.error(error);
     return res.status(500).json({
       message: "Server error",
     });
@@ -236,6 +234,6 @@ exports.jobSearch = async (req, res) => {
       );
     }
 
-    res.status(200).json(filteredjob);
+    res.status(200).json(filteredjobs);
   } catch (error) {}
 };
