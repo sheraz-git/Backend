@@ -34,20 +34,25 @@ const jobSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+ 
+    min_projectLength:{
+      type:Number,
+      require:true
+ },
+ max_projectLength:{
+   type:Number,
+   require:true
+ },
+  proposal:{
+    type:Number,
+    require:true
+  },
+  isFavorite:{
+   type:Boolean,
+   require:false,
+   default:false
+  }
 
-    min_projectLength: {
-      type: Number,
-      require: true,
-    },
-    max_projectLength: {
-      type: Number,
-      require: true,
-    },
-    proposal: {
-      type: Number,
-      require: false,
-      default: 0,
-    },
   },
   {
     timestamps: true,
