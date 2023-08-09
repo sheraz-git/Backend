@@ -15,7 +15,7 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
     requirements: {
-      type: String,
+      type: [String],
       required: true
     },
     category: [{
@@ -45,7 +45,13 @@ const jobSchema = new mongoose.Schema(
   proposal:{
     type:Number,
     require:true
+  },
+  isFavorite:{
+   type:Boolean,
+   require:false,
+   default:false
   }
+
   },
   {
     timestamps: true,
