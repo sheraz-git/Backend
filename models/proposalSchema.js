@@ -22,11 +22,11 @@ const proposalSchema = new mongoose.Schema(
     },
     bidAmount: {
       type: Number,
-      required: true,
+      required: false,
     },
     deliveryTime: {
       type: Number,
-      required: true,
+      required: false,
     },
     file: {
       type: String,
