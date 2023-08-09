@@ -3,6 +3,7 @@ const ErrorHandling = require("../../utils/errorHandler.js");
 const User = require("../../models/userModel"); // Import the User model
 const Country = require("../../models/country"); // Import the User model
 const Role = require("../../models/role");
+const { where } = require("../../models/addToFavorite");
 
 exports.createJob = async (req, res, next) => {
   try {
@@ -223,17 +224,43 @@ exports.updateAJob = async (req, res) => {
   }
 };
 
+// exports.jobSearch = async (req, res) => {
+//   try {
+//     const { service_Title } = req.body;
+  
+
+//     let filteredjobs = await Job.find();
+
+//     if (filteredjobs) {
+//       filteredService_Title = filteredjobs.filter((job) =>
+//         job.service_Title.toLowerCase().includes(service_Title.toLowerCase())
+//       );
+//     }
+//     console.log("filtered jobs", filteredService_Title);
+
+//     res.status(200).json(filteredService_Title);
+//   } catch (error) {
+//     console.error("An error occurred:", error);
+//     res.status(500).json({ error: "An error occurred while processing your request." });
+//   }
+// };
+
 exports.jobSearch = async (req, res) => {
   try {
     const { service_Title } = req.body;
 
-    let filteredjobs = await Job.find();
-    if (service_Title) {
-      filteredService_Title = filteredjobs.filter((job) =>
-        job.service_Title.toLowerCase().includes(service_Title.toLowerCase())
-      );
-    }
+    const filteredjobs = await Job.find({ service_Title: { $regex: new RegExp(service_Title, "i") } });
 
-    res.status(200).json(filteredjobs);
-  } catch (error) {}
+    console.log("filtered jobs", filteredjobs);
+
+    const jobCount = filteredjobs.length;
+
+    res.status(200).json({
+      count: jobCount,
+      jobs: filteredjobs
+    });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "An error occurred while processing your request." });
+  }
 };

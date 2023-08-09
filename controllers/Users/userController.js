@@ -169,7 +169,7 @@ exports.getUser = async (req, res, next) => {
     const user = await User.findById(userId).populate("country", "country");
 
     if (!user) {
-      return next(new ErrorHandler("User not Found", 404));
+      return next(new ErrorHandler("No Such User Found", 404));
     } else {
       return res.status(200).json({
         message: "User data",
@@ -257,16 +257,14 @@ exports.getTopSeller = async (req, res, next) => {
 exports.userSearch = async (req, res) => {
   try {
     const { fullName } = req.body;
-    console.log(fullName);
     let filteredUser = await User.find();
+
     if (fullName) {
       filteredfullName = filteredUser.filter((user) => {
         let fullname = `${user.first_name} ${user.last_name}`;
         return fullname.toLowerCase().includes(fullName.toLowerCase());
       });
-   
     }
-
     res.status(200).json(filteredfullName);
   } catch (error) {}
 };

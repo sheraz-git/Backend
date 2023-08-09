@@ -15,7 +15,7 @@ exports.AddPortfolio = async (req, res) => {
     // console.log(req.body, req.files.portfolio_Document.tempFilePath);
     const uploadResponse = await cloudinary.uploader.upload(fileUrl, { resource_type: 'raw' ,folder: 'documents' });
 
-    console.log(uploadResponse,"lllllllllllllllllllllll");
+    // console.log(uploadResponse,"lllllllllllllllllllllll");
   
     const {Portfolio_title,Portfolio_Description,portfolio_Document,cover_image,skills} = req.body;
     console.log("body", req.body);
@@ -49,6 +49,7 @@ exports.AddPortfolio = async (req, res) => {
   }
 };
 
+// get portfolio by portfolio id
 exports.getPortfolio = async (req, res) => {
   try {
     const portfolioId = req.params.id;

@@ -35,7 +35,7 @@ exports.uploadImage = async (req, res) => {
 exports.createProposal = async (req, res, next) => {
   try {
     const {
-      coverLetter,
+      coverLetter,  
       description,
       bidAmount,
       deliveryTime,
@@ -122,6 +122,11 @@ exports.createProposal = async (req, res, next) => {
       imagesUrl,
     });
 
+    job.proposal += 1
+    await job.save();
+
+
+
     // Save the proposal to the database
     await newProposal.save();
 
@@ -138,12 +143,16 @@ exports.deleteProposal = async (req, res, next) => {
   try {
     const proposalId = req.params.proposalId;
     const userId = req.params.userId;
+    const jobId = req.params.jobId;
+
+    console.log(req.params.userId);
 
     // Get the user from the User collection
     const user = await User.findById(userId);
     if (!user) {
       return next(new ErrorHandling("User not found", 404));
     }
+   
 
     // Check if the user's role is 'seller'
     const role = await Role.findOne({ role: "seller" });
@@ -160,6 +169,14 @@ exports.deleteProposal = async (req, res, next) => {
     if (!proposal) {
       return next(new ErrorHandling("Proposal not found", 404));
     }
+
+     const job = await Job.findById(jobId);
+     if(!job){
+      return next(new ErrorHandling("Job Does not exist, It might have been removed by its creator", 404));
+     }     
+
+     job.proposal -= 1
+     job.save()
 
     // Delete the proposal
     await proposal.deleteOne();
@@ -182,9 +199,13 @@ exports.getAllProposal = async (req, res, next) => {
       return next(new ErrorHandling("Proposal not found", 404));
     }
 
+    const count = proposal.length
+
     return res.status(200).json({
       message: "Proposal retrieved successfully",
+      count: count,
       data: proposal,
+
     });
   } catch (error) {
     console.error(error);
@@ -192,7 +213,7 @@ exports.getAllProposal = async (req, res, next) => {
   }
 };
 
-exports.updateProposal = async (req, res) => {
+exports.updateProposal = async (req, res, next) => {
   try {
     const proposalId = req.params.proposalId;
     const update = req.body;
@@ -221,7 +242,7 @@ exports.getAProposalById = async (req, res, next) => {
 
     // Find the proposal by ID
     const proposal = await Proposal.findOne(proposalId);
-    console.log("I am here ===>", proposal);
+    // console.log("I am here ===>", proposal);
     if (!proposal) {
       return next(new ErrorHandling("Proposal not found", 404));
     }
@@ -250,8 +271,11 @@ exports.getProposalsByJob = async (req, res, next) => {
       });
     }
 
+    const count = proposals.length
+
     return res.status(200).json({
       message: "Proposals retrieved successfully",
+      count: count,
       data: proposals,
     });
   } catch (error) {

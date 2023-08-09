@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-// const validator = require('validator');
+const validator = require('validator');
 const ErrorHandler = require("../../utils/errorHandler");
 const User = require("../../models/userModel");
 
@@ -45,7 +45,7 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
 exports.forUserConfirmationEmail = async function (req, res, next) {
   try {
     const email = req.params.userEmail;
-    console.log(email);
+    // console.log(email);
 
     if (!validator.isEmail(email)) {
       return next(new ErrorHandler("Invalid email address", 400));
@@ -98,7 +98,7 @@ exports.forUserConfirmationEmail = async function (req, res, next) {
 exports.userEmailVerification = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
+    // console.log(userId);
     const user = await User.findById(userId);
 
     if (!user) {
@@ -169,10 +169,10 @@ exports.EmailForForgetPassword = async (req, res) => {
     const { email } = req.body;
 
     const checkEmail = await User.findOne({ email: email });
-    console.log(
-      "🚀 ~ file: email.js:169 ~ exports.ForgetEmail= ~ checkEmail:",
-      checkEmail._id
-    );
+    // console.log(
+    //   "🚀 ~ file: email.js:169 ~ exports.ForgetEmail= ~ checkEmail:",
+    //   checkEmail._id
+    // );
     if (!checkEmail) {
       return res.status(404).json({
         message: "Email not found",

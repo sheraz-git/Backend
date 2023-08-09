@@ -10,11 +10,11 @@ exports.contactUs = async (req, res) => {
         phone_no,
         description
       });
-      // Save the seller to the database
+
       await newContact.save();
       await forContactUs( name, email, subject, phone_no,description);
       return res.status(201).json({
-         message: "Message Send",
+         message: "Message Has Been Sent",
         data: newContact,
       });
     } catch (error) {
