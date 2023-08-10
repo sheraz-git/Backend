@@ -4,10 +4,10 @@ const mongodb = require("mongodb").MongoClient;
 async function connectToMongo() {
   try {
     await mongoose.connect(
-      "mongodb+srv://znzcommunication123:znz112233@cluster0.rbmym9j.mongodb.net/",
+      "mongodb+srv://hamza321:hamza321@cluster0.dw2jcvv.mongodb.net",
       { useNewUrlParser: true }
     );
-    console.log("Connected to MongoDB");
+    console.log("Connection to DB Successful");
   } catch (err) {
     console.error("Error connecting to MongoDB", err);
   }

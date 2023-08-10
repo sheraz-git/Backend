@@ -50,7 +50,7 @@ exports.createJob = async (req, res, next) => {
     if (user.thepa < 10) {
       return next(
         new ErrorHandling(
-          "You do not have sufficient thepa to post a job. Please buy some to continue",
+          "You do not have sufficient Thepa's to post a job. Please buy some to continue",
           403
         )
       );
@@ -141,9 +141,9 @@ exports.getAJob = async (req, res, next) => {
 exports.getAJobByID = async (req, res, next) => {
   try {
     const jobID = req.params.id;
-    console.log("🚀 ~ file: Job.js:134 ~ exports.getAJobByID= ~ jobID:", jobID)
+    // console.log("🚀 ~ file: Job.js:134 ~ exports.getAJobByID= ~ jobID:", jobID)
     const job = await Job.findOne({ _id: jobID }).populate("category User"); 
-    console.log("🚀 ~ file: Job.js:137 ~ exports.getAJobByID= ~ job:", job)
+    // console.log("🚀 ~ file: Job.js:137 ~ exports.getAJobByID= ~ job:", job)
 
     if (!job) {
       return next(new ErrorHandling("Job Not Found", 404));
@@ -178,7 +178,7 @@ exports.getAllJobs = async (req, res, next) => {
   }
 };
 
-exports.deleteAJob = async (req, res) => {
+exports.deleteAJob = async (req, res, next) => {
   try {
     const jobId = req.params.id;
     const job = await Job.findByIdAndDelete(jobId);
@@ -186,7 +186,7 @@ exports.deleteAJob = async (req, res) => {
       return next(new ErrorHandling("Job Not Found", 404));
     } else {
       return res.status(200).json({
-        message: "Deleted_Successfully",
+        message: "Deleted Successfully",
       });
     }
   } catch (error) {
@@ -251,7 +251,7 @@ exports.jobSearch = async (req, res) => {
 
     const filteredjobs = await Job.find({ service_Title: { $regex: new RegExp(service_Title, "i") } });
 
-    console.log("filtered jobs", filteredjobs);
+    // console.log("filtered jobs", filteredjobs);
 
     const jobCount = filteredjobs.length;
 
