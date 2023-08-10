@@ -1,9 +1,9 @@
 const Job = require("../../models/Job");
 const ErrorHandling = require("../../utils/errorHandler.js");
-const User = require("../../models/userModel"); // Import the User model
-const Country = require("../../models/country"); // Import the User model
+const User = require("../../models/userModel"); 
+const Country = require("../../models/country"); 
 const Role = require("../../models/role");
-const { where } = require("../../models/addToFavorite");
+
 
 exports.createJob = async (req, res, next) => {
   try {
@@ -26,7 +26,6 @@ exports.createJob = async (req, res, next) => {
       return next(new ErrorHandling("User not found", 404));
     }
 
-
     const role = await Role.findOne({ role: "buyer" });
     if (!role) {
       return next(new ErrorHandling("Role not found", 500));
@@ -35,7 +34,6 @@ exports.createJob = async (req, res, next) => {
     if (user.role.toString() !== role._id.toString()) {
       return next(new ErrorHandling("Only Buyers Can Post a Job", 403));
     }
-
 
     if (!user.email_verification) {
       return next(
@@ -46,7 +44,6 @@ exports.createJob = async (req, res, next) => {
       );
     }
 
-
     if (user.thepa < 10) {
       return next(
         new ErrorHandling(
@@ -55,7 +52,6 @@ exports.createJob = async (req, res, next) => {
         )
       );
     }
-
 
     const previousJob = await Job.findOne({
       User: userId,
@@ -74,9 +70,8 @@ exports.createJob = async (req, res, next) => {
       );
     }
 
-   
     user.thepa -= 10;
-    await user.save(); 
+    await user.save();
 
     const newJob = new Job({
       service_Title,
@@ -91,7 +86,6 @@ exports.createJob = async (req, res, next) => {
       Proposal,
     });
 
-   
     await newJob.save();
     return res.status(201).json({
       message: "New job created",
@@ -106,11 +100,11 @@ exports.createJob = async (req, res, next) => {
 exports.getAJob = async (req, res, next) => {
   try {
     const categoryId = req.params.id;
-    
+
     const job = await Job.find({ category: { $in: [categoryId] } })
       .populate("category")
       .populate("job_level");
-    
+
     const count = job.length;
     if (count === 0) {
       return next(
@@ -142,7 +136,7 @@ exports.getAJobByID = async (req, res, next) => {
   try {
     const jobID = req.params.id;
     // console.log("🚀 ~ file: Job.js:134 ~ exports.getAJobByID= ~ jobID:", jobID)
-    const job = await Job.findOne({ _id: jobID }).populate("category User"); 
+    const job = await Job.findOne({ _id: jobID }).populate("category User");
     // console.log("🚀 ~ file: Job.js:137 ~ exports.getAJobByID= ~ job:", job)
 
     if (!job) {
@@ -160,9 +154,9 @@ exports.getAJobByID = async (req, res, next) => {
 
 exports.getAllJobs = async (req, res, next) => {
   try {
-   
-    const AllJobs = await Job.find().sort({updatedAt:-1}).populate("category")
-       
+    const AllJobs = await Job.find()
+      .sort({ updatedAt: -1 })
+      .populate("category");
 
     if (!AllJobs) {
       return next(new ErrorHandling("Job Not Found", 404));
@@ -200,7 +194,7 @@ exports.updateAJob = async (req, res) => {
   try {
     const jobId = req.params.id;
     const update = req.body;
-    const options = { new: true }; 
+    const options = { new: true };
 
     const updateJob = await Job.findOneAndUpdate(
       { _id: jobId },
@@ -227,7 +221,6 @@ exports.updateAJob = async (req, res) => {
 // exports.jobSearch = async (req, res) => {
 //   try {
 //     const { service_Title } = req.body;
-  
 
 //     let filteredjobs = await Job.find();
 
@@ -249,7 +242,9 @@ exports.jobSearch = async (req, res) => {
   try {
     const { service_Title } = req.body;
 
-    const filteredjobs = await Job.find({ service_Title: { $regex: new RegExp(service_Title, "i") } });
+    const filteredjobs = await Job.find({
+      service_Title: { $regex: new RegExp(service_Title, "i") },
+    });
 
     // console.log("filtered jobs", filteredjobs);
 
@@ -257,10 +252,12 @@ exports.jobSearch = async (req, res) => {
 
     res.status(200).json({
       count: jobCount,
-      jobs: filteredjobs
+      jobs: filteredjobs,
     });
   } catch (error) {
     console.error("An error occurred:", error);
-    res.status(500).json({ error: "An error occurred while processing your request." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing your request." });
   }
 };
