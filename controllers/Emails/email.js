@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer");
-// const validator = require('validator');
-const ErrorHandler = require("../utils/errorHandler");
-const User = require("../models/userModel");
+const validator = require('validator');
+const ErrorHandler = require("../../utils/errorHandler");
+const User = require("../../models/userModel");
+
 exports.forUserEmail = async function (first_name, last_name, email, userId) {
   try {
     // create reusable transporter object using the default SMTP transport
@@ -16,7 +17,6 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
       },
     });
 
-
     let mailOptions = {
       to: email,
       subject: "New User Registration",
@@ -28,9 +28,9 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
             <p>Click the following link to see the user details:</p>
             <p><a href="http://localhost:3001/#/loading/${userId}">Move to Website</a></p>
             <h2>Thank and Regards</h2>
-            <h2>ZNZ Communication</h2>`
-   };
-    
+            <h2>ZNZ Communication</h2>`,
+    };
+
     // send email with defined transport object
     let info = await transport.sendMail(mailOptions);
 
@@ -45,14 +45,13 @@ exports.forUserEmail = async function (first_name, last_name, email, userId) {
 exports.forUserConfirmationEmail = async function (req, res, next) {
   try {
     const email = req.params.userEmail;
-    console.log(email);
+    // console.log(email);
 
     if (!validator.isEmail(email)) {
       return next(new ErrorHandler("Invalid email address", 400));
     }
 
-    const Email = await User.findOne({ email: email })
-
+    const Email = await User.findOne({ email: email });
 
     if (!Email) {
       return next(new ErrorHandler("Email Not Exist", 404));
@@ -80,7 +79,7 @@ exports.forUserConfirmationEmail = async function (req, res, next) {
             <p>Click the following link to confirm Email</p>
             <p><a href="http://localhost:3001/#/loading/${Email._id}">Move to Website</a></p>
             <h2>Thanks and Regards</h2>
-            <h2>ZNZ Communication</h2>`
+            <h2>ZNZ Communication</h2>`,
     };
 
     // send email with defined transport object
@@ -99,9 +98,8 @@ exports.forUserConfirmationEmail = async function (req, res, next) {
 exports.userEmailVerification = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
+    // console.log(userId);
     const user = await User.findById(userId);
-
 
     if (!user) {
       return res.status(404).json({
@@ -122,8 +120,15 @@ exports.userEmailVerification = async (req, res) => {
     });
   }
 };
+
 // Contact any person//
-exports.forContactUs = async function ( name, email, subject, phone_no,description) {
+exports.forContactUs = async function (
+  name,
+  email,
+  subject,
+  phone_no,
+  description
+) {
   try {
     // create reusable transporter object using the default SMTP transport
     let transport = nodemailer.createTransport({
@@ -157,61 +162,59 @@ exports.forContactUs = async function ( name, email, subject, phone_no,descripti
   }
 };
 
-
 ///forget Password///
 
-exports.EmailForForgetPassword=async (req,res)=>{
+exports.EmailForForgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
 
-try {
-const {email}=req.body;
+    const checkEmail = await User.findOne({ email: email });
+    // console.log(
+    //   "🚀 ~ file: email.js:169 ~ exports.ForgetEmail= ~ checkEmail:",
+    //   checkEmail._id
+    // );
+    if (!checkEmail) {
+      return res.status(404).json({
+        message: "Email not found",
+      });
+    }
+    // create reusable transporter object using the default SMTP transport
+    let transport = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      service: "Gmail",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: "sherazabbas669@gmail.com",
+        pass: "dyoonnvupsqlgzjy",
+      },
+    });
 
-const checkEmail = await User.findOne({email:email});
-console.log("🚀 ~ file: email.js:169 ~ exports.ForgetEmail= ~ checkEmail:", checkEmail._id);
-if(!checkEmail){
-  return res.status(404).json({
-    message: "Email not found",
-  });
-}
-  // create reusable transporter object using the default SMTP transport
-  let transport = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    service: "Gmail",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: "sherazabbas669@gmail.com",
-      pass: "dyoonnvupsqlgzjy",
-   },
-  });
+    let mailOptions = {
+      from: '"sherazabbas669@gmail.com"', // sender address
+      to: checkEmail.email,
+      subject: "To Reset Password Click On The Link below",
+      html: `<h1> Forgot Password </h1><br>
+    <p><a href="http://localhost:3001/#/reset-password?id=/${checkEmail._id}">Click Here to change password</a></p>`,
+    };
 
-  let mailOptions = {
-    from: '"sherazabbas669@gmail.com"', // sender address
-    to: checkEmail.email,
-    subject: "To Reset Password Click On The Link below",
-    html: `<h1> Forgot Password </h1><br>
-    <p><a href="http://localhost:3000/#/reset-password/${checkEmail._id}">Click Here to change password</a></p>`
-  };
-  
-  // send email with defined transport object
-  let info = await transport.sendMail(mailOptions);
-  return res.status(200).json({
-    message: "Email Sent",
-  });
-
-} catch (error) {
-  return res.status(500).send("Some error occurred");
-}
-}
-
-
+    // send email with defined transport object
+    let info = await transport.sendMail(mailOptions);
+    return res.status(200).json({
+      message: "Email Sent",
+    });
+  } catch (error) {
+    return res.status(500).send("Some error occurred");
+  }
+};
 
 exports.forgetPassword = async (req, res) => {
   try {
     const userId = req.params.id;
     const { newPassword } = req.body;
-  
+
     const user = await User.findById(userId);
- 
+
     if (!user) {
       return res.status(404).json({
         message: "User not found",

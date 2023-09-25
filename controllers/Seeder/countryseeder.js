@@ -5,16 +5,16 @@ const fs = require("fs");
 exports.countrySeeder = async function (req, res) {
     try {
         const countryData = await CountryModel.find({});
-        console.log(countryData);
+   //     console.log(countryData);
 
         const count = await CountryModel.countDocuments();
-        console.log(count);
+  //      console.log(count);
 
         if (count === 0) {
             const countries = await csvtojson().fromFile("public/countries.csv");
-            console.log(countries);
+      //      console.log(countries);
             const seedData = countries.map((country) => ({ country: country.country }));
-console.log(seedData);
+   // console.log(seedData);
             await CountryModel.insertMany(seedData)
                 .then(() => {
                     return res.status(200).json({

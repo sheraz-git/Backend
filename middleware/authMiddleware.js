@@ -9,6 +9,7 @@ exports.verifyToken = async (req, res, next) => {
   }
   
   const [bearer, token] = authHeader.split(" ");
+  
   if (bearer !== "Bearer") {
     return res.status(401).json({
       message: "Invalid token format",

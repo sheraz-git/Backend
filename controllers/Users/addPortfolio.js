@@ -15,7 +15,7 @@ exports.AddPortfolio = async (req, res) => {
     // console.log(req.body, req.files.portfolio_Document.tempFilePath);
     const uploadResponse = await cloudinary.uploader.upload(fileUrl, { resource_type: 'raw' ,folder: 'documents' });
 
-    console.log(uploadResponse,"lllllllllllllllllllllll");
+    // console.log(uploadResponse,"lllllllllllllllllllllll");
   
     const {Portfolio_title,Portfolio_Description,portfolio_Document,cover_image,skills} = req.body;
     console.log("body", req.body);
@@ -49,6 +49,7 @@ exports.AddPortfolio = async (req, res) => {
   }
 };
 
+// get portfolio by portfolio id
 exports.getPortfolio = async (req, res) => {
   try {
     const portfolioId = req.params.id;
@@ -118,27 +119,3 @@ exports.updatePortfolio = async (req, res) => {
   }
 };
 
-
-// exports.getAJob = async (req, res) => {
-//   try {
-//     const categoryId = req.params.id;
-//     console.log(categoryId);
-//     const job = await Job.find({ category: { $in: [categoryId] } }).populate("category");
-//     console.log(job);
-//     if (!job) {
-//       return res.status(404).json({
-//         message: "Job not found",
-//       });
-//     } else {
-//       return res.status(200).json({
-//         message: "Job data",
-//         job,
-//       });
-//     }
-//   } catch (error) {
-//     return res.status(500).json({
-//       message: "Server error",
-//       error: error.message,
-//     });
-//   }
-// };
