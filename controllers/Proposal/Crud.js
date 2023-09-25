@@ -4,6 +4,7 @@ const User = require("../../models/userModel");
 const Role = require("../../models/role");
 const Job = require("../../models/Job");
 const cloudinary = require("cloudinary").v2;
+const ProposalSchema = require('../../models/proposalSchema')
 
 
 
@@ -87,7 +88,7 @@ exports.createProposal = async (req, res, next) => {
     }
 
     // Check if the user has already sent a proposal for the specified job
-    const existingProposal = await Proposal.findOne({
+    const existingProposal = await ProposalSchema.findOne({
       user: userId,
       job: jobId,
     });
@@ -106,7 +107,7 @@ exports.createProposal = async (req, res, next) => {
     user.thepa -= 10;
     await user.save(); // Save the updated user object
 
-    const newProposal = new Proposal({
+    const newProposal = new ProposalSchema({
       file: req.body.file, // Image URL from the request body
       user: userId,
       job: jobId,
@@ -135,7 +136,9 @@ exports.createProposal = async (req, res, next) => {
       data: newProposal,
     });
   } catch (error) {
-    return next(new ErrorHandling());
+    console.log(error);
+    return (error);
+
   }
 };
 
@@ -165,7 +168,7 @@ exports.deleteProposal = async (req, res, next) => {
     }
 
     // Find the proposal by ID
-    const proposal = await Proposal.findById(proposalId);
+    const proposal = await ProposalSchema.findById(proposalId);
     if (!proposal) {
       return next(new ErrorHandling("Proposal not found", 404));
     }
@@ -187,13 +190,13 @@ exports.deleteProposal = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new ErrorHandling());
+    return next(new ErrorHandling(error));
   }
 };
 
 exports.getAllProposal = async (req, res, next) => {
   try {
-    const proposal = await Proposal.find();
+    const proposal = await ProposalSchema.find();
 
     if (!proposal) {
       return next(new ErrorHandling("Proposal not found", 404));
@@ -209,7 +212,7 @@ exports.getAllProposal = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new ErrorHandling());
+    return next(new ErrorHandling(error));
   }
 };
 
@@ -219,7 +222,7 @@ exports.updateProposal = async (req, res, next) => {
     const update = req.body;
     const options = { new: true }; // Return the updated record
 
-    const updatePropoasal = await Proposal.findOneAndUpdate(
+    const updatePropoasal = await ProposalSchema.findOneAndUpdate(
       { _id: proposalId },
       update,
       options
@@ -253,7 +256,7 @@ exports.getAProposalById = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new ErrorHandling());
+    return next(new ErrorHandling(error));
   }
 };
 
@@ -264,7 +267,7 @@ exports.getProposalsByJob = async (req, res, next) => {
     const jobId = req.params.jobId;
     const jobIdtoString = jobId.toString();
 
-    const proposals = await Proposal.find({ job: jobIdtoString });
+    const proposals = await ProposalSchema.find({ job: jobIdtoString });
     if (proposals.length === 0) {
       return res.status(200).json({
         message: "No proposal found against this job",
@@ -280,6 +283,6 @@ exports.getProposalsByJob = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new ErrorHandling());
+    return next(new ErrorHandling(error));
   }
 };

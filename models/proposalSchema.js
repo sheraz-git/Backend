@@ -22,18 +22,18 @@ const proposalSchema = new mongoose.Schema(
     },
     bidAmount: {
       type: Number,
-      required: true,
+      // required: true,
     },
     deliveryTime: {
       type: Number,
-      required: true,
+      required: false,
     },
     file: {
       type: String,
-      required: false,
+      // required: false,
     },
     githubLink: {
-      required: false,
+      // required: false,
       type: String,
     },
     duration: {
@@ -49,11 +49,11 @@ const proposalSchema = new mongoose.Schema(
       type: Number,
     },
     websiteLink: {
-      required: false,
+      // required: false,
       type: String,
     },
     imagesUrl: {
-      required: true,
+      // required: true,
       type: [String],
     },
   },

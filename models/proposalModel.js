@@ -26,11 +26,11 @@ const proposalSchema = new mongoose.Schema(
       },
     websiteLink: {
       type: String,
-      required: true,
+      required: false,
     },
     attachment: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {

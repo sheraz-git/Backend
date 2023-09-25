@@ -7,12 +7,17 @@ const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { forUserEmail } = require("../Emails/email");
+require("dotenv").config();
 cloudinary.config({
-  cloud_name: "dsv28ungz",
-  api_key: "775634257667667",
-  api_secret: "6jMBqRlVALHfbR8udrS3fUf4m1A",
+  cloud_name: process.env.ClOUDINARY_NAME,
+  api_key: process.env.ClOUDINARY_API_KEY,
+  api_secret: process.env.ClOUDINARY_SECREAT_KEY,
 });
-
+const cloud_name=process.env.ClOUDINARY_NAME
+console.log(
+  
+  "---",cloud_name
+);
 //Upload image controllers
 exports.uploadImage = async (req, res) => {
   try {
@@ -126,7 +131,7 @@ exports.userLogin = async (req, res, next) => {
       return next(new ErrorHandler("Incorrect email and Password", 404));
     }
 
-    const token = jwt.sign({ userId: user._id }, "paypal", { expiresIn: "1w" });
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: "1w" });
 
     return res.status(200).json({
       message: "Login successful",

@@ -55,7 +55,7 @@ exports.createJob = async (req, res, next) => {
 
     const previousJob = await Job.findOne({
       User: userId,
-      service_Title,
+      service_Titlee,
       minimum_budget,
       service_Description,
       requirements,
@@ -93,7 +93,7 @@ exports.createJob = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new ErrorHandling());
+    return next(new ErrorHandling(error));
   }
 };
 
@@ -226,7 +226,7 @@ exports.updateAJob = async (req, res) => {
 
 //     if (filteredjobs) {
 //       filteredService_Title = filteredjobs.filter((job) =>
-//         job.service_Title.toLowerCase().includes(service_Title.toLowerCase())
+//         job .service_Title.toLowerCase().includes(service_Title.toLowerCase())
 //       );
 //     }
 //     console.log("filtered jobs", filteredService_Title);
